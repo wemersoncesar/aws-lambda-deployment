@@ -30,5 +30,5 @@
         - name: Upload artefacts to AWS S3
           run: |
             echo "Uploading artefacts to S3"
-            aws s3 cp ./*.py s3://tinyflix-2024-03-06/here-is-my-code/
+            aws s3 cp af/*.py s3://tinyflix-2024-03-06/here-is-my-code/
             echo "Artefacts uploaded to S3"
