@@ -22,11 +22,12 @@
             fetch-depth: 2 # To fetch the current commit and its parent (so we can compare)
 
         - name: Setup AWS CLI
-          uses: aws-actions/configure-aws-credentials@v1
+          uses: aws-actions/configure-aws-credentials@v3
           with:
             aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
             aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
             aws-region: us-west-2 # Modify this to your desired AWS region
+            role-to-assume: arn:aws:iam::s3crr_role_for_wccarrijo-s3:role/github-actions
 
         - name: List artefact files with their timestamps to show that builds/downloads succeeded
           run: ls -al ./lambda-code
