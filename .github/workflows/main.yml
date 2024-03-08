@@ -26,5 +26,10 @@
         - name: Install aws cli using pip3
           run: pip3 install awscli
         - name: Configure AWS credentials
-          run: aws configure set aws_access_key_id TEST && aws configure set aws_secret_access_key TEST2
+          run: aws configure set aws_access_key_id  TEST1 && aws configure set aws_secret_access_key test2
+        - name: Upload artefacts to AWS S3
+          run: |
+            echo "Uploading artefacts to S3"
+            aws s3 cp af/*.py s3://tinyflix-2024-03-06/here-is-my-code/
+            echo "Artefacts uploaded to S3"
     
