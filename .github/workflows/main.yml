@@ -35,3 +35,7 @@
             aws s3 cp af/main.py s3://tinyflix-2024-03-06/here-is-my-code/
             echo "Upload finished!"
     
+        - name: Zip Files
+          run:  |
+            zip -r ../prognos_lambda.zip .
+            ls -la
