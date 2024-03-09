@@ -43,7 +43,7 @@
     
         - name: Zip Files
           run:  |
-            zip -r af prognos_lambda.zip .
+            zip -r prognos_lambda.zip af
             ls -la
             # Update Lambda function code
             pwd
