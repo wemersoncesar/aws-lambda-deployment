@@ -29,6 +29,11 @@
           run: aws configure set aws_access_key_id ${{ vars.AWS_ACCESS_KEY_ID }} && aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         - name: Upload artefacts to AWS S3
           run: |
+            # Constants
+            S3_BUCKET=tinyflix-2024-03-06
+            S3_KEY=prognos_lambda.zip
+            LAMBDA_FUNCTION_NAME=tinyflix_function
+
             echo "Uploading files to S3"
             aws s3 cp af/app/emr.py s3://tinyflix-2024-03-06/here-is-my-code/
             aws s3 cp af/app/config.py s3://tinyflix-2024-03-06/here-is-my-code/
@@ -39,3 +44,5 @@
           run:  |
             zip -r af prognos_lambda.zip .
             ls -la
+            # Update Lambda function code
+            aws lambda update-function-code --function-name $LAMBDA_FUNCTION_NAME --s3-bucket $S3_BUCKET --s3-key $S3_KEY
