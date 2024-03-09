@@ -44,7 +44,15 @@
         - name: Zip Files
           run:  |
             zip -r prognos_lambda.zip af
+
+        - name: Update Lambda
+          run:  |
             ls -la
             # Update Lambda function code
             pwd
-            aws lambda update-function-code --function-name tinyflix_function --s3-bucket tinyflix-2024-03-06 --s3-key here-is-my-code/prognos_lambda.zip  --region us-east-1 --zip-file fileb://$(pwd)/prognos_lambda.zip
+            aws lambda update-function-code \
+            --function-name tinyflix_function \
+            --s3-bucket tinyflix-2024-03-06 \
+            --s3-key here-is-my-code/prognos_lambda.zip  \
+            --region us-east-1 \
+            --zip-file fileb://$(pwd)/prognos_lambda.zip
