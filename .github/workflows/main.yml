@@ -47,4 +47,4 @@
             ls -la
             # Update Lambda function code
             pwd
-            aws lambda update-function-code --function-name tinyflix_function --s3-bucket tinyflix-2024-03-06 --s3-key here-is-my-code/prognos_lambda.zip  --region us-east-1 --zip-file fileb://prognos_lambda.zip
+            aws lambda update-function-code --function-name tinyflix_function --s3-bucket tinyflix-2024-03-06 --s3-key here-is-my-code/prognos_lambda.zip  --region us-east-1 --zip-file  prognos_lambda.zip
