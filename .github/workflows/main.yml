@@ -25,9 +25,9 @@
           run: ls -lha
         - name: Install aws cli using pip3
           run: pip3 install awscli
-          
+
         - name: Setup AWS CLI
-          uses: aws-actions/configure-aws-credentials@master
+          uses: aws-actions/configure-aws-credentials@v3
           with:
             aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
             aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
