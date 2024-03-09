@@ -45,4 +45,4 @@
             zip -r af prognos_lambda.zip .
             ls -la
             # Update Lambda function code
-            aws lambda update-function-code --function-name $LAMBDA_FUNCTION_NAME --s3-bucket $S3_BUCKET --s3-key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            aws lambda update-function-code --function-name tinyflix_function --s3-bucket $S3_BUCKET/here-is-my-code/ --s3-key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
