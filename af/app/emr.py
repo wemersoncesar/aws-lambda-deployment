@@ -78,7 +78,7 @@ class AtaSteps:
     def __call__(self):
         return self.__steps
 
-class TransientEMRLauncher:
+class 0:
     """Class for launching transient EMR on AWS."""
     
     def __init__(self, name, config):

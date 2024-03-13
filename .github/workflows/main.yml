@@ -31,17 +31,17 @@
 
         
         - name: Zip Files
-          run: zip -r prognos_lambda.zip af
+          run: zip -r aws_lambda.zip af
 
         - name: Upload Zip file to AWS S3
           run: |
             # Constants
             S3_BUCKET=tinyflix-2024-03-06
-            S3_KEY=prognos_lambda.zip
+            S3_KEY=aws_lambda.zip
             LAMBDA_FUNCTION_NAME=tinyflix_function
 
             echo "Uploading files to S3"
-            aws s3 cp prognos_lambda.zip s3://tinyflix-2024-03-06/here-is-my-code/
+            aws s3 cp aws_lambda.zip s3://tinyflix-2024-03-06/here-is-my-code/
             echo "Upload finished!"
 
         - name: Update Lambda
@@ -52,5 +52,5 @@
             aws lambda update-function-code \
             --function-name tinyflix_function \
             --s3-bucket tinyflix-2024-03-06 \
-            --s3-key here-is-my-code/prognos_lambda.zip  \
+            --s3-key here-is-my-code/aws_lambda.zip  \
             --region us-east-1 
