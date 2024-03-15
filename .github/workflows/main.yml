@@ -38,10 +38,10 @@
             # Constants
             S3_BUCKET=tinyflix-2024-03-06
             S3_KEY=aws_lambda.zip
-            LAMBDA_FUNCTION_NAME=tinyflix_function
+            LAMBDA_FUNCTION_NAME=testGitHubActionsDeploy
 
             echo "Uploading files to S3"
-            aws s3 cp aws_lambda.zip s3://tinyflix-2024-03-06/here-is-my-code/
+            aws s3 cp aws_lambda.zip s3://testGitHubActionsDeploy/lambda-emr/
             echo "Upload finished!"
 
         - name: Update Lambda
@@ -50,7 +50,7 @@
             # Update Lambda function code
             pwd
             aws lambda update-function-code \
-            --function-name tinyflix_function \
-            --s3-bucket tinyflix-2024-03-06 \
-            --s3-key here-is-my-code/aws_lambda.zip  \
+            --function-name testGitHubActionsDeploy \
+            --s3-bucket w-emr-code-deployment \
+            --s3-key lambda-emr/aws_lambda.zip  \
             --region us-east-1 
