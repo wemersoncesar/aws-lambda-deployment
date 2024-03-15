@@ -53,4 +53,4 @@
             --function-name testGitHubActionsDeploy \
             --s3-bucket w-emr-code-deployment \
             --s3-key lambda-emr/aws_lambda.zip  \
-            --region us-east-1 
+            --region eu-west-1
