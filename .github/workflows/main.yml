@@ -36,12 +36,12 @@
         - name: Upload Zip file to AWS S3
           run: |
             # Constants
-            S3_BUCKET=tinyflix-2024-03-06
+            S3_BUCKET=w-emr-code-deployment
             S3_KEY=aws_lambda.zip
             LAMBDA_FUNCTION_NAME=testGitHubActionsDeploy
 
             echo "Uploading files to S3"
-            aws s3 cp aws_lambda.zip s3://testGitHubActionsDeploy/lambda-emr/
+            aws s3 cp aws_lambda.zip s3://w-emr-code-deployment/lambda-emr/
             echo "Upload finished!"
 
         - name: Update Lambda
