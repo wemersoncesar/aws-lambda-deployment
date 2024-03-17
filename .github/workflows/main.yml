@@ -31,7 +31,7 @@
 
         
         - name: Zip Files
-          run: zip -r aws_lambda.zip af
+          run: zip -r aws_lambda.zip ./
 
         - name: Upload Zip file to AWS S3
           run: |
