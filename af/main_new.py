@@ -9,12 +9,12 @@ from app.emr import TransientEMRLauncher
 
 def lambda_handler(event, context):
     #'--class', 'com.linkit.em.prophet.preprocessor.Preprocessor',
-    #s3://livraison-prophet-cloud-c8/main/prophet-preprocessor_2.12-1.3.0-assembly.jar
+    #s3://w-emr-code-deployment/main/prophet-preprocessor_2.12-1.3.0-assembly.jar
     lambda_name = context.function_name
     args_preprocessor = ['--class', 'com.linkit.Main',
                          '--master', 'yarn',
                          '--deploy-mode', 'cluster',
-                         '--files', 's3://livraison-prophet-cloud-c8/main/log4j.properties',
+                         '--files', 's3://w-emr-code-deployment/main/log4j.properties',
                          '--conf', 'spark.sql.parquet.fs.optimized.committer.optimization-enabled=true',
                          '--conf', 'spark.streaming.backpressure.enabled=true',
                          's3://w-emr-code-deployment/job-jar/test-s3_2.12-0.1.0-SNAPSHOT.jar',
