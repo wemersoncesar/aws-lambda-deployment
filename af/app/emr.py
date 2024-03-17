@@ -1,6 +1,7 @@
 import boto3
 from abc import ABC, abstractmethod
 
+
 class EMRStep(ABC):
     """Abstract base class for EMR steps."""
     
@@ -9,14 +10,14 @@ class EMRStep(ABC):
         """Return the EMR step configuration."""
         pass
 
+
 class DataEngineeringStep(EMRStep):
     """Class representing a step performed by the data engineering code in EMR."""
-    
-    def __init__(self, name, script_path, args=None):
+
+    def __init__(self, name,  args=None):
         self.name = name
-        self.script_path = script_path
         self.args = args or []
-    
+
     def __call__(self):
         """Return the Spark step configuration."""
         return {
@@ -24,20 +25,21 @@ class DataEngineeringStep(EMRStep):
             'ActionOnFailure': 'CONTINUE',
             'HadoopJarStep': {
                 'Jar': 'command-runner.jar',
-                'Args': ['spark-submit', '--deploy-mode', 'cluster', self.script_path] + self.args
+                'Args': ['spark-submit'] + self.args
             }
         }
 
+
 class DataScienceStep(EMRStep):
     """Class representing a step performed by the data science code in EMR."""
-    
+
     def __init__(self, step_name, script_name, fleet, config, on_failure="TERMINATE_CLUSTER"):
         self.step_name = step_name
         self.script_name = script_name
         self.fleet = fleet
         self.config = config
         self.on_failure = on_failure
-    
+
     def __call__(self):
         """Return the Spark step configuration."""
         jar_path = f"s3://{self.config.region}.elasticmapreduce/libs/script-runner/script-runner.jar"
@@ -46,7 +48,7 @@ class DataScienceStep(EMRStep):
         application_bucket_uri = f"s3://{application_bucket}"
         # To adapt with HDFS URIs once data engineers implement working steps.
         data_base_bucket = self.config.bucket_base_name["data"]
-        data_bucket =  f"{data_base_bucket}-{self.config.customer_id}-{self.config.environment}"
+        data_bucket = f"{data_base_bucket}-{self.config.customer_id}-{self.config.environment}"
         data_bucket_uri = f"s3://{data_bucket}"
         data_base_uri = f"{data_bucket_uri}/processed/{self.fleet}"
 
@@ -66,6 +68,7 @@ class DataScienceStep(EMRStep):
             }
         }
 
+
 class AtaSteps:
     """Class representing the necessary steps to process a given ATA."""
 
@@ -78,19 +81,20 @@ class AtaSteps:
     def __call__(self):
         return self.__steps
 
-class 0:
+
+class TransientEMRLauncher:
     """Class for launching transient EMR on AWS."""
-    
+
     def __init__(self, name, config):
         self.name = name
         self.config = config
         self.emr_client = boto3.client("emr", region_name=config.region)
-    
+
     def run(self, steps):
         """Launch EMR with specified steps."""
 
-        if not all([isinstance(step, EMRStep) for step in steps]):
-            raise ValueError("All steps must be defined from EMRStep.")
+        # if not all([isinstance(step, EMRStep) for step in steps]):
+        #     raise ValueError("All steps must be defined from EMRStep.")
 
         response = self.emr_client.run_job_flow(
             Name=self.name,
@@ -103,7 +107,6 @@ class 0:
                 "Ec2KeyName": self.config.ec2_key_name,
                 "EmrManagedMasterSecurityGroup": self.config.security_group,
                 "EmrManagedSlaveSecurityGroup": self.config.security_group,
-                "ServiceAccessSecurityGroup": self.config.service_access_security_group,
             },
             ReleaseLabel=self.config.emr_version,
             Applications=[{"Name": "Spark"}],

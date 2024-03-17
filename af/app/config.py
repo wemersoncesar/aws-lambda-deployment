@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 import json
 
+
 class Config:
     """
     A class to manage configuration settings from both JSON file and environment variables.
@@ -27,7 +28,7 @@ class Config:
         """
         self.__config = {}
         if not config_file_path:
-            config_file_path = os.path.join(Path(os.path.abspath(__file__)).parent.parent, "config.json")
+            config_file_path = os.path.join(Path(os.path.abspath(__file__)).parent, "../config.json")
         self._load_from_json(config_file_path)
         self._load_from_env()
 
@@ -56,7 +57,6 @@ class Config:
             raise KeyError(f"Some expected environment variables ({unset_vars}) are not defined.")
         for env_var in self.environment_variables:
             self.__config[env_var] = os.environ[env_var]
-                
 
     def get(self, key, default=None):
         """
@@ -96,7 +96,7 @@ class Config:
             If the key is not found in the configuration.
         """
         return self.__config[key]
-    
+
     def __getattr__(self, key):
         """
         Get the value for a configuration key using attribute notation.
