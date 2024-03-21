@@ -20,17 +20,14 @@
         - name: Checkout Repository
           uses: actions/checkout@v4
           
-        - name: Checking version.txt
-          id: step_one
-          shell: bash
-          run: | 
-            echo "SELECTED_COLOR=green" >> "$GITHUB_OUTPUT"
-        - name: Test
-          id: step_two
-          shell: bash
-          env:
-            SELECTED_COLOR: ${{ steps.color-selector.outputs.SELECTED_COLOR }}
-          run: echo "The selected color is $SELECTED_COLOR"
+        - name: Step 1
+          run: |
+            echo "action_state=yellow" >> $GITHUB_ENV
+            echo "State is: '${{ env.action_state }}'" # No output since same step
+        - name: Step 2
+          run: |
+            echo "State is: '${{ env.action_state }}'" # Output works
+        
         - name: List artefact files with their timestamps to show that builds/downloads succeeded
           run: ls -lha
         - name: Install aws cli using pip3
