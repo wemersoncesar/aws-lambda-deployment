@@ -63,7 +63,7 @@
             echo "Upload finished!" 
             
         - name: Update Lambda
-          run:  |
+          run: |
             ls -la
             # Update Lambda function code
             pwd
