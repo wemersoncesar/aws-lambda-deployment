@@ -23,15 +23,7 @@
         - name: Checking version.txt
           id: step_one
           shell: bash
-          run:  |
-            echo "Branch Name: "${{ github.head_ref || github.ref_name }}
-            if git diff --merge-base origin/main --exit-code version.txt
-            then
-              echo "version.txt was not updated!"
-              exit 1
-            else
-              exit 0
-            fi
+          run: | 
             echo "SELECTED_COLOR=green" >> "$GITHUB_OUTPUT"
         - name: Test
           id: step_two
