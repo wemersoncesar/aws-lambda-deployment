@@ -44,7 +44,9 @@
 
         
         - name: Zip Files
-          run: zip -r aws_lambda.zip ./ -i '*.py' '*.json'
+          run: |
+            version=$(cat version.txt)
+            zip -r aws_lambda_${version}.zip ./ -i '*.py' '*.json'
           
         - name: Upload Zip file to AWS S3
           run: |
@@ -66,12 +68,7 @@
             echo "Branch Name: "${{ github.head_ref || github.ref_name }}
             ls -lah
             FILE=version.txt
-            version=""
-            if test -f "$FILE"; then
-                version=$(cat version.txt)
-                echo "$FILE exists."
-            fi
-            echo "${{ env.VERSION_CONTROL }}"
+            
             echo $version
             # Upload zip file
             aws lambda update-function-code \
