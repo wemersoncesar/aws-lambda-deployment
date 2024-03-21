@@ -22,7 +22,7 @@
           
         - name: Step 1
           run: |
-            echo "action_state=yellow" >> $GITHUB_ENV
+            echo "action_state=$(cat version.txt)" >> $GITHUB_ENV
             echo "State is: '${{ env.action_state }}'" # No output since same step
         - name: Step 2
           run: |
