@@ -35,7 +35,7 @@
             echo "VERSION_CONTROL=123" >> "$GITHUB_ENV"
         - name: Test
           id: step_two
-          run: echo "#### "${{ env.VERSION_CONTROL }}
+          run: echo "#### $VERSION_CONTROL"
         - name: List artefact files with their timestamps to show that builds/downloads succeeded
           run: ls -lha
         - name: Install aws cli using pip3
