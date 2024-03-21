@@ -56,7 +56,7 @@
             # Update Lambda function code
             pwd
             # Check version file is updated
-            if git diff --merge-base origin/main --exit-code version.txt
+            if git diff --merge-base origin/${{ github.head_ref || github.ref_name }} --exit-code version.txt
             then
               echo "version.txt was not updated!"
               exit 1
