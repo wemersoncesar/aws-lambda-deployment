@@ -1,4 +1,4 @@
-  name: deploy to lambda
+ho  name: deploy to lambda
   on:
     workflow_dispatch:
       inputs:
@@ -66,7 +66,7 @@
             echo "Branch Name: "${{ github.head_ref || github.ref_name }}
             ls -lah
             FILE=version.txt
-            
+            echo ">>>> "${{ env.VERSION_CONTROL }}
             version=$(cat version.txt)
             # Upload zip file
             aws lambda update-function-code \
