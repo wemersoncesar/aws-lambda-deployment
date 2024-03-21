@@ -1,11 +1,14 @@
   name: deploy to lambda
   on:
     workflow_dispatch:
-    push:
-      branches:
-        - main
-      paths:
-        - '**.py'
+      inputs:
+        target-aws-lambda-function:
+          required: true
+          description: Target AWS Lambda Function
+          type: choice
+          options:
+            - function1
+            - function2
   jobs:
     deploy:
       runs-on: ubuntu-latest
@@ -43,6 +46,7 @@
             LAMBDA_FUNCTION_NAME=testGitHubActionsDeploy
 
             echo "Uploading files to S3"
+            echo ${{ github.event.inputs.target-aws-lambda-function }}
             aws s3 cp aws_lambda.zip s3://w-emr-code-deployment/lambda-emr/
             echo "Upload finished!"
 
