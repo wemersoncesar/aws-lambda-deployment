@@ -53,15 +53,13 @@
             
         - name: Update Lambda
           run: |
-            ls -la
             # Update Lambda function code            
             # Check version file is updated
             echo "Branch Name: "${{ github.head_ref || github.ref_name }
-            version=123
             
             # Upload zip file
             aws lambda update-function-code \
             --function-name testGitHubActionsDeploy \
             --s3-bucket w-emr-code-deployment \
-            --s3-key lambda-emr/aws_lambda_${version}.zip  \
+            --s3-key lambda-emr/aws_lambda.zip  \
             --region eu-west-1
