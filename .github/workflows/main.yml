@@ -23,7 +23,17 @@
           with:
             sparse-checkout: '**.py'
             sparse-checkout-cone-mode: false
-
+        - name: Checking version.txt
+          run:  |
+            echo "Branch Name: "${{ github.head_ref || github.ref_name }}
+            if git diff --merge-base origin/main --exit-code version.txt
+            then
+              echo "version.txt was not updated!"
+              exit 1
+            else
+              exit 0
+            fi
+            echo "VERSION=$(cat version.txt)" >> $GITHUB_ENV
         - name: Test
           run: echo ${{ env.VERSION }}
         - name: List artefact files with their timestamps to show that builds/downloads succeeded
@@ -44,7 +54,7 @@
             S3_BUCKET=w-emr-code-deployment
             S3_KEY=aws_lambda.zip
             LAMBDA_FUNCTION_NAME=testGitHubActionsDeploy
-
+            
             echo "Uploading files to S3"
             echo "Lambda Funcion: "${{ github.event.inputs.target-aws-lambda-function }}
             echo ${{ github.event.inputs.target-aws-lambda-function }}
@@ -55,8 +65,9 @@
           run: |
             # Update Lambda function code            
             # Check version file is updated
-            echo "Branch Name: "${{ github.head_ref || github.ref_name }
-            
+            echo "Branch Name: "${{ github.head_ref || github.ref_name }}
+            version="${{ env.VERSION }}"
+            echo $version
             # Upload zip file
             aws lambda update-function-code \
             --function-name testGitHubActionsDeploy \
