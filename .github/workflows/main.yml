@@ -65,11 +65,10 @@
         - name: Update Lambda
           run: |
             ls -la
-            # Update Lambda function code
-            pwd
+            # Update Lambda function code            
             # Check version file is updated
             echo "Branch Name: "${{ github.head_ref || github.ref_name }
-            version=$(cat version.txt)
+            version=123
             
             # Upload zip file
             aws lambda update-function-code \
