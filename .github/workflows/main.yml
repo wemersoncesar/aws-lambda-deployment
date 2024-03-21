@@ -17,8 +17,10 @@
               cd ./lambda-code
 
         - name: Checkout Repository
-          uses: actions/checkout@v2
-
+          uses: actions/checkout@v4
+          with:
+            sparse-checkout: '**.py'
+            sparse-checkout-cone-mode: false
         
       
         - name: List artefact files with their timestamps to show that builds/downloads succeeded
