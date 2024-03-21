@@ -22,8 +22,8 @@
           
         - name: Step 1
           run: |
-            echo "action_state=$(cat version.txt)" >> $GITHUB_ENV
-            echo "State is: '${{ env.action_state }}'" # No output since same step
+            echo "file_version=$(cat version.txt)" >> $GITHUB_ENV
+            echo "State is: '${{ env.file_version }}'" # No output since same step
         - name: Step 2
           run: |
             echo "State is: '${{ env.action_state }}'" # Output works
