@@ -1,4 +1,4 @@
-ho  name: deploy to lambda
+  name: deploy to lambda
   on:
     workflow_dispatch:
       inputs:
