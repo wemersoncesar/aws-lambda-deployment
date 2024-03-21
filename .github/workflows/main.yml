@@ -23,6 +23,7 @@
           
         - name: Checking version.txt
           id: step_one
+          shell: bash
           run:  |
             echo "Branch Name: "${{ github.head_ref || github.ref_name }}
             if git diff --merge-base origin/main --exit-code version.txt
@@ -35,6 +36,7 @@
             echo "VERSION_CONTROL=123" >> "$GITHUB_ENV"
         - name: Test
           id: step_two
+          shell: bash
           run: echo "#### ${VERSION_CONTROL}"
         - name: List artefact files with their timestamps to show that builds/downloads succeeded
           run: ls -lha
