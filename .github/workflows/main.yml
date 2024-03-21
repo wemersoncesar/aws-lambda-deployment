@@ -33,7 +33,7 @@
             else
               exit 0
             fi
-            echo "VERSION=$(cat version.txt)" >> $GITHUB_ENV
+            echo "VERSION=123" >> $GITHUB_ENV
         - name: Test
           run: echo ${{ env.VERSION }}
         - name: List artefact files with their timestamps to show that builds/downloads succeeded
