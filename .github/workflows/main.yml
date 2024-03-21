@@ -46,7 +46,7 @@
 
         
         - name: Zip Files
-          run: zip -r aws_lambda.zip ./
+          run: zip -r aws_lambda.zip ./ -i '*.py' '*.json'
           
         - name: Upload Zip file to AWS S3
           run: |
