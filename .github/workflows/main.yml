@@ -66,7 +66,13 @@
             # Update Lambda function code            
             # Check version file is updated
             echo "Branch Name: "${{ github.head_ref || github.ref_name }}
-            version=$(cat version.txt)
+            ls -lah
+            FILE=version.txt
+            if test -f "$FILE"; then
+                version=$(cat version.txt)
+                echo "$FILE exists."
+            fi
+           
             echo $version
             # Upload zip file
             aws lambda update-function-code \
