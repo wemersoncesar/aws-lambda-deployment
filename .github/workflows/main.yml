@@ -45,6 +45,7 @@
             LAMBDA_FUNCTION_NAME=testGitHubActionsDeploy
 
             echo "Uploading files to S3"
+            echo "Lambda Funcion: ${{ github.event.inputs.target-aws-lambda-function }}"
             echo ${{ github.event.inputs.target-aws-lambda-function }}
             aws s3 cp aws_lambda.zip s3://w-emr-code-deployment/lambda-emr/
             echo "Upload finished!"
