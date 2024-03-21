@@ -50,11 +50,9 @@
           
         - name: Upload Zip file to AWS S3
           run: |
-            # Constants
-            S3_BUCKET=w-emr-code-deployment
-            S3_KEY=aws_lambda.zip
-            LAMBDA_FUNCTION_NAME=testGitHubActionsDeploy
-            echo $version
+            # Constants 
+            
+            version=$(cat version.txt)
             echo "Uploading files to S3"
             echo "Lambda Funcion: "${{ github.event.inputs.target-aws-lambda-function }}
             echo ${{ github.event.inputs.target-aws-lambda-function }}
@@ -69,7 +67,7 @@
             ls -lah
             FILE=version.txt
             
-            echo $version
+            version=$(cat version.txt)
             # Upload zip file
             aws lambda update-function-code \
             --function-name testGitHubActionsDeploy \
