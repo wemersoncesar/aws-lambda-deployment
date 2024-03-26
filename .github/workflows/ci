@@ -1,0 +1,24 @@
+name: Python CI with Java and Python Build
+
+on:
+  pull_request:
+
+jobs:
+  build:
+
+    runs-on: [self-hosted, linux]
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+    - name: Install Black
+      run: pip install black
+    - name: Check code formatting with Black
+      run: |
+        if ! black --check .; then
+          echo "::error ::Formatting issues detected. Please run 'black .' on your code."
+          exit 1
+        fi
