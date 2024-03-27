@@ -1,0 +1,12 @@
+name: Upload Artefact
+on: workflow_call
+  push:
+    branches:
+      - main
+jobs:
+  - lint:
+    runs-on: unbuntu-latest
+    steps:
+      -name: Output information
+        run: echo "Deploying & uploading..."
+

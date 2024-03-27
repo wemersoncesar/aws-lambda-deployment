@@ -1,15 +1,16 @@
   name: deploy to lambda
   on:
     workflow_dispatch:
-    push:
-      branches:
-        - main
-      paths:
-        - '**.py'
+      inputs:
+        target-aws-lambda-function:
+          required: true
+          description: Target AWS Lambda Function
+          type: choice
+          options:
+            - testGitHubActionsDeploy
   jobs:
     deploy:
       runs-on: ubuntu-latest
-
       steps:
         - name: Prepare repo directory
           run: |
@@ -17,10 +18,16 @@
               cd ./lambda-code
 
         - name: Checkout Repository
-          uses: actions/checkout@v2
-
+          uses: actions/checkout@v4
+          
+        - name: Step 1
+          run: |
+            echo "file_version=$(cat version.txt)" >> $GITHUB_ENV
+            echo "State is: '${{ env.file_version }}'" # No output since same step
+        - name: Step 2
+          run: |
+            echo "State is: '${{ env.file_version }}'" # Output works
         
-      
         - name: List artefact files with their timestamps to show that builds/downloads succeeded
           run: ls -lha
         - name: Install aws cli using pip3
@@ -31,26 +38,33 @@
 
         
         - name: Zip Files
-          run: zip -r aws_lambda.zip ./
-
+          run: |
+            version=$(cat version.txt)
+            zip -r aws_lambda_${version}.zip ./ -i '*.py' '*.json'
+          
         - name: Upload Zip file to AWS S3
           run: |
-            # Constants
-            S3_BUCKET=w-emr-code-deployment
-            S3_KEY=aws_lambda.zip
-            LAMBDA_FUNCTION_NAME=testGitHubActionsDeploy
-
+            # Constants 
+            
+            version=$(cat version.txt)
             echo "Uploading files to S3"
-            aws s3 cp aws_lambda.zip s3://w-emr-code-deployment/lambda-emr/
-            echo "Upload finished!"
-
+            echo "Lambda Funcion: "${{ github.event.inputs.target-aws-lambda-function }}
+            echo ${{ github.event.inputs.target-aws-lambda-function }}
+            aws s3 cp aws_lambda_${version}.zip s3://w-emr-code-deployment/lambda-emr/
+            echo "Upload finished!" 
+            
         - name: Update Lambda
-          run:  |
-            ls -la
-            # Update Lambda function code
-            pwd
+          run: |
+            # Update Lambda function code            
+            # Check version file is updated
+            echo "Branch Name: "${{ github.head_ref || github.ref_name }}
+            ls -lah
+            FILE=version.txt
+            echo ">>>> "${{ env.VERSION_CONTROL }}
+            version=$(cat version.txt)
+            # Upload zip file
             aws lambda update-function-code \
             --function-name testGitHubActionsDeploy \
             --s3-bucket w-emr-code-deployment \
-            --s3-key lambda-emr/aws_lambda.zip  \
+            --s3-key lambda-emr/aws_lambda_${version}.zip  \
             --region eu-west-1
