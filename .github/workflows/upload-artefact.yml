@@ -1,12 +1,10 @@
 name: Upload Artefact
-on: workflow_call
-  push:
-    branches:
-      - main
+on: workflow_call 
+
 jobs:
-  - lint:
-    runs-on: unbuntu-latest
+  pull-request-quality-checks:
+    runs-on: [self-hosted, linux]
     steps:
-      -name: Output information
-        run: echo "Deploying & uploading..."
+      - name: Checkout
+        run: echo "Reusing configuration"
 
