@@ -16,7 +16,6 @@ jobs:
       - name: Test
         run: echo "Testing external file"
   deploy:
-    needs: build
     uses: ./.github/workflows/upload-artefact.yml
     
     
