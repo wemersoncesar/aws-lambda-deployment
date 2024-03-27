@@ -10,8 +10,12 @@ on:
         options:
           - testGitHubActionsDeploy
 jobs:
-  deploy:
+  lint:
     runs-on: ubuntu-latest
+    steps:
+      - name: Test
+        run: echo "Testing external file"
+  deploy:
     needs: build
     uses: ./.github/workflows/upload-artefact.yml
     
