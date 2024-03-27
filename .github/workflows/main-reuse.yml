@@ -1,0 +1,18 @@
+
+name: deploy to lambda
+on:
+  workflow_dispatch:
+    inputs:
+      target-aws-lambda-function:
+        required: true
+        description: Target AWS Lambda Function
+        type: choice
+        options:
+          - testGitHubActionsDeploy
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    uses: ./.github/workflows/upload-artefact.yml
+    
+    
