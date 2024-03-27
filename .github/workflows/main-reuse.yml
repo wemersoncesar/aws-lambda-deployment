@@ -1,5 +1,5 @@
 
-name: deploy to lambda
+name: Deploy with Reusable file
 on:
   workflow_dispatch:
     inputs:
