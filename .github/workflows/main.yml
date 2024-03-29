@@ -1,16 +1,38 @@
   name: deploy to lambda
   on:
     workflow_dispatch:
-    push:
-      branches:
-        - main
-      paths:
-        - '**.py'
+      inputs:
+        customer: 
+          description: "Customer"
+          required: true
+          default: "Client1"
+          type: choice
+          options:
+            - Client1
+            - Client2
+        env:
+          description: "Environment"
+          required: true
+          type: choice
+          options:
+            - DEV
+            - ACC
+
+
   jobs:
     deploy:
       runs-on: ubuntu-latest
 
       steps:
+
+        - name: "Print options"
+          run: |
+            echo "Customer: $CUSTOMER"
+            echo "Environment: $ENVIRONMENT"
+          env:
+            CUSTOMER: ${{ inputs.customer }}
+            ENVIRONMENT: ${{ inputs.env }} 
+
         - name: Prepare repo directory
           run: |
               mkdir -p ./lambda-code
