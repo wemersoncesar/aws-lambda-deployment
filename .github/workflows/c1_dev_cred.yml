@@ -1,4 +1,4 @@
-  name: deploy to lambda
+  name: Setup credentials
   on:
     workflow_call: 
 
@@ -7,30 +7,6 @@
       runs-on: ubuntu-latest
 
       steps:
-
-        - name: "Print options"
-          run: |
-            echo "Customer: $CUSTOMER"
-            echo "Environment: $ENVIRONMENT"
-          env:
-            CUSTOMER: ${{ inputs.customer }}
-            ENVIRONMENT: ${{ inputs.env }} 
-
-        - name: Prepare repo directory
-          run: |
-              mkdir -p ./lambda-code
-              cd ./lambda-code
-
-        - name: Checkout Repository
-          uses: actions/checkout@v2
-
-        
-      
-        - name: List artefact files with their timestamps to show that builds/downloads succeeded
-          run: ls -lha
-        - name: Install aws cli using pip3
-          run: pip3 install awscli
-
         - name: Configure AWS credentials
           run: aws configure set aws_access_key_id ${{ vars.C1_DEV_AWS_ACCESS_KEY_ID }} && aws configure set aws_secret_access_key ${{ secrets.C1_DEV_AWS_SECRET_ACCESS_KEY }}
 
