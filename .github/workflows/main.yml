@@ -49,8 +49,8 @@
           run: pip3 install awscli
 
         - name: Configure AWS credentials
-          uses: ./.github/workflows/cd_dev_cred.yml
-          
+          uses: ./.github/workflows/c1_dev_cred.yml
+
         - name: Zip Files
           run: zip -r aws_lambda.zip ./
 
