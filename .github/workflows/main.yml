@@ -20,6 +20,9 @@
 
 
   jobs:
+    call-workflow-passing-data:
+      uses: ./.github/workflows/c1_dev_cred.yml
+      
     deploy:
       runs-on: ubuntu-latest
 
@@ -46,10 +49,7 @@
         - name: List artefact files with their timestamps to show that builds/downloads succeeded
           run: ls -lha
         - name: Install aws cli using pip3
-          run: pip3 install awscli
-
-        - name: Configure AWS credentials
-          uses: ./.github/workflows/c1_dev_cred.yml
+          run: pip3 install awscli 
 
         - name: Zip Files
           run: zip -r aws_lambda.zip ./
