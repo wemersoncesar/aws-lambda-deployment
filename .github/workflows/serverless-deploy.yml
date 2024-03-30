@@ -1,0 +1,41 @@
+  name: deploy to lambda
+  on:
+    workflow_dispatch:
+      inputs:
+        customer: 
+          description: "Customer"
+          required: true
+          default: "Client1"
+          type: choice
+          options:
+            - Client1
+            - Client2
+        env:
+          description: "Environment"
+          required: true
+          type: choice
+          options:
+            - DEV
+            - ACC
+
+
+  jobs:
+    call-workflow-passing-data:
+      uses: ./.github/workflows/c1_dev_cred.yml
+    deploy:
+      runs-on: ubuntu-latest
+
+      steps:
+        - uses: actions/checkout@v3
+        - uses: aws-actions/setup-sam@v2
+          with:
+            use-installer: true
+        - uses: aws-actions/configure-aws-credentials@v2
+          with:
+            aws-access-key-id: ${{ vars.C1_DEV_AWS_ACCESS_KEY_ID }}
+            aws-secret-access-key: ${{ secrets.C1_DEV_AWS_SECRET_ACCESS_KEY }}
+            aws-region: eu-west-1
+        # Build inside Docker containers
+        - run: sam build --use-container
+        # Prevent prompts and failure when the stack is unchanged
+        - run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset
