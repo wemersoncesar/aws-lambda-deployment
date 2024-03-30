@@ -20,8 +20,6 @@
 
 
   jobs:
-    call-workflow-passing-data:
-      uses: ./.github/workflows/c1_dev_cred.yml
     deploy:
       runs-on: ubuntu-latest
 
