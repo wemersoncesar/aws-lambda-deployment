@@ -39,15 +39,16 @@
               cd ./lambda-code
 
         - name: Checkout Repository
-          uses: actions/checkout@v2
-
+          uses: actions/checkout@v4
+          
+        - uses: aws-actions/configure-aws-credentials@v4
+          with:
+            aws-access-key-id: ${{ vars.C1_DEV_AWS_ACCESS_KEY_ID }}
+            aws-secret-access-key: ${{ secrets.C1_DEV_AWS_SECRET_ACCESS_KEY }}
+            aws-region: eu-west-1
         
       
-        - name: List artefact files with their timestamps to show that builds/downloads succeeded
-          run: ls -lha
-        - name: Install aws cli using pip3
-          run: pip3 install awscli
-
+    
         - name: Zip Files
           run: zip -r aws_lambda.zip ./
 
