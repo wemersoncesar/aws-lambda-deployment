@@ -37,7 +37,13 @@
         
         - name: Zip Files
           run: zip -r aws_lambda.zip ./
-          
+        - name: Set AWS Token
+          run: |
+              if: startsWith(github.ref_name, 'dev-')
+                  echo "AWS_TOKEN=${{ secrets.AWS_LAMBDA_TOKEN_DEV }}" >> $GITHUB_ENV 
+              elif github.ref_name == 'main'
+                  echo "AWS_TOKEN=${{ secrets.AWS_LAMBDA_TOKEN_PROD }}" >> $GITHUB_ENV 
+                  
         - name: Update Lambda
           run:  |
             ls -la

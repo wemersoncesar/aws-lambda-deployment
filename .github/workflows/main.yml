@@ -1,4 +1,4 @@
-  name: deploy to lambda
+  name: Deploy Lambda Function
   on:
     workflow_dispatch:
       inputs:
@@ -56,17 +56,6 @@
         - name: Zip Files
           run: zip -r aws_lambda.zip ./
 
-        - name: Upload Zip file to AWS S3
-          run: |
-            # Constants
-            S3_BUCKET=w-emr-code-deployment
-            S3_KEY=aws_lambda.zip
-            LAMBDA_FUNCTION_NAME=testGitHubActionsDeploy
-
-            echo "Uploading files to S3"
-            aws s3 cp aws_lambda.zip s3://w-emr-code-deployment/lambda-emr/
-            echo "Upload finished!"
-
         - name: Update Lambda
           run:  |
             ls -la
@@ -74,6 +63,5 @@
             pwd
             aws lambda update-function-code \
             --function-name testGitHubActionsDeploy \
-            --s3-bucket w-emr-code-deployment \
-            --s3-key lambda-emr/aws_lambda.zip  \
+            --zip-file fileb://./aws_lambda.zip  \
             --region eu-west-1
