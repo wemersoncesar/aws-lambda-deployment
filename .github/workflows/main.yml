@@ -40,16 +40,21 @@
 
         - name: Checkout Repository
           uses: actions/checkout@v4
-
+        
         - uses: aws-actions/configure-aws-credentials@v4
           if: ${{ inputs.customer == 'Client1' &&  inputs.env == 'dev' }}
           with:
             aws-access-key-id: ${{ vars.C1_DEV_AWS_ACCESS_KEY_ID }}
             aws-secret-access-key: ${{ secrets.C1_DEV_AWS_SECRET_ACCESS_KEY }}
             aws-region: eu-west-1
+
+        - uses: aws-actions/configure-aws-credentials@v4
+          if: ${{ inputs.customer == 'Client2' &&  inputs.env == 'dev' }}
+          with:
+            aws-access-key-id: ${{ vars.C1_DEV_AWS_ACCESS_KEY_ID }}
+            aws-secret-access-key: ${{ secrets.C1_DEV_AWS_SECRET_ACCESS_KEY }}
+            aws-region: eu-west-1
         
-      
-    
         - name: Zip Files
           run: zip -r aws_lambda.zip ./
 
