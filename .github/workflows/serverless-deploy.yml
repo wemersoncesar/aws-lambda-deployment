@@ -26,6 +26,7 @@
       steps:
         - uses: actions/checkout@v3
         - uses: aws-actions/setup-sam@v2
+          
           with:
             use-installer: true
         - uses: aws-actions/configure-aws-credentials@v2
@@ -33,7 +34,16 @@
             aws-access-key-id: ${{ vars.C1_DEV_AWS_ACCESS_KEY_ID }}
             aws-secret-access-key: ${{ secrets.C1_DEV_AWS_SECRET_ACCESS_KEY }}
             aws-region: eu-west-1
-        # Build inside Docker containers
-        - run: sam build --use-container
-        # Prevent prompts and failure when the stack is unchanged
-        - run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset
+        
+        - name: Zip Files
+          run: zip -r aws_lambda.zip ./
+          
+        - name: Update Lambda
+          run:  |
+            ls -la
+            # Update Lambda function code
+            pwd
+            aws lambda update-function-code \
+            --function-name testGitHubActionsDeploy \
+            --zip-file fileb://./aws_lambda.zip  \
+            --region eu-west-1
