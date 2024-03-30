@@ -40,8 +40,9 @@
 
         - name: Checkout Repository
           uses: actions/checkout@v4
-          
+
         - uses: aws-actions/configure-aws-credentials@v4
+          if: ${{ inputs.customer == 'Client1' &&  inputs.env == 'dev' }}
           with:
             aws-access-key-id: ${{ vars.C1_DEV_AWS_ACCESS_KEY_ID }}
             aws-secret-access-key: ${{ secrets.C1_DEV_AWS_SECRET_ACCESS_KEY }}
