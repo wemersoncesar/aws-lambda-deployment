@@ -1,4 +1,4 @@
-  name: deploy to lambda
+  name: Test Sam
   on:
     workflow_dispatch:
       inputs:
@@ -19,9 +19,7 @@
             - ACC
 
 
-  jobs:
-    call-workflow-passing-data:
-      uses: ./.github/workflows/c1_dev_cred.yml
+  jobs: 
     deploy:
       runs-on: ubuntu-latest
 
