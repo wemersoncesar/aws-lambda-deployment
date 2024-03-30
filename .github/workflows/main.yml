@@ -34,8 +34,8 @@
             ENVIRONMENT: ${{ inputs.env }} 
         
         - run: |
-            accesskey=${{ inputs.customer }}+"_"+${{ inputs.env }}+"_"+"AWS_ACCESS_KEY_ID"
-            echo ${{ secrets[format('{0}_A',  inputs.env  )] }}
+            accesskey=${{ inputs.customer }}_${{ inputs.env }}_AWS_ACCESS_KEY_ID"
+            echo ${{ secrets[format('{0}_A',  ${accesskey})] }}
 
         - name: Prepare repo directory
           run: |
@@ -46,14 +46,14 @@
           uses: actions/checkout@v4
         
         - uses: aws-actions/configure-aws-credentials@v4
-          if: ${{ inputs.customer == 'Client1' &&  inputs.env == 'dev' }}
+          if: ${{ inputs.customer == 'C1' &&  inputs.env == 'dev' }}
           with:
             aws-access-key-id: ${{ vars.C1_DEV_AWS_ACCESS_KEY_ID }}
             aws-secret-access-key: ${{ secrets.C1_DEV_AWS_SECRET_ACCESS_KEY }}
             aws-region: eu-west-1
 
         - uses: aws-actions/configure-aws-credentials@v4
-          if: ${{ inputs.customer == 'Client2' &&  inputs.env == 'dev' }}
+          if: ${{ inputs.customer == 'C2' &&  inputs.env == 'dev' }}
           with:
             aws-access-key-id: ${{ vars.C2_DEV_AWS_ACCESS_KEY_ID }}
             aws-secret-access-key: ${{ secrets.C2_DEV_AWS_SECRET_ACCESS_KEY }}
