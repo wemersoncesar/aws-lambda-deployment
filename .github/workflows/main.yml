@@ -8,8 +8,8 @@
           default: "Client1"
           type: choice
           options:
-            - Client1
-            - Client2
+            - C1
+            - C2
         env:
           description: "Environment"
           required: true
@@ -32,6 +32,10 @@
           env:
             CUSTOMER: ${{ inputs.customer }}
             ENVIRONMENT: ${{ inputs.env }} 
+        
+        - run: |
+            accesskey=${{ inputs.customer }}+"_"+${{ inputs.env }}+"_"+"AWS_ACCESS_KEY_ID"
+            echo ${{ secrets[format('{0}_A',  inputs.env  )] }}
 
         - name: Prepare repo directory
           run: |
@@ -51,8 +55,8 @@
         - uses: aws-actions/configure-aws-credentials@v4
           if: ${{ inputs.customer == 'Client2' &&  inputs.env == 'dev' }}
           with:
-            aws-access-key-id: ${{ vars.C1_DEV_AWS_ACCESS_KEY_ID }}
-            aws-secret-access-key: ${{ secrets.C1_DEV_AWS_SECRET_ACCESS_KEY }}
+            aws-access-key-id: ${{ vars.C2_DEV_AWS_ACCESS_KEY_ID }}
+            aws-secret-access-key: ${{ secrets.C2_DEV_AWS_SECRET_ACCESS_KEY }}
             aws-region: eu-west-1
         
         - name: Zip Files
