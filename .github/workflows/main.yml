@@ -36,7 +36,7 @@
             AWS_SECRET_ACCESS_KEY: ${{ env.CUSTOMER }}_${{ inputs.env }}_AWS_SECRET_ACCESS_KEY
             
         - run: |
-            echo ${{ secrets[env.AWS_ACCESS_KEY_ID] }}
+            echo ${{ vars[env.AWS_ACCESS_KEY_ID] }}
 
         - name: Prepare repo directory
           run: |
