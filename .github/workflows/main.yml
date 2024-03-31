@@ -10,7 +10,7 @@
           options:
             - C1
             - C2
-        env:
+        environment:
           description: "Environment"
           required: true
           type: choice
@@ -18,16 +18,14 @@
             - DEV
             - ACC
 
-
   jobs:
     deploy:
       runs-on: ubuntu-latest
-
       steps:
 
         - name: "Print options"
           run: |
-            echo "custumer-env-name=${{ env.CUSTOMER }}_${{ inputs.env }}" >> $GITHUB_ENV
+            echo "custumer-env-name=${{ inputs.CUSTOMER }}_${{ inputs.environment }}" >> $GITHUB_ENV
 
         - name: Checkout Repository
           uses: actions/checkout@v4
