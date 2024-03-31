@@ -31,19 +31,12 @@
 
         - name: Checkout Repository
           uses: actions/checkout@v4
-        
-        - name: Replace Env
-          run: |
-            env=${{ inputs.env }}
-            sed -i s@[ENV]@${env,,}@g config/config.json
 
         - uses: aws-actions/configure-aws-credentials@v4 
           with:
             aws-access-key-id: ${{ vars[format('{0}_AWS_ACCESS_KEY_ID', env.custumer-env-name)] }}
             aws-secret-access-key: ${{ secrets[format('{0}_AWS_SECRET_ACCESS_KEY', env.custumer-env-name)] }}
             aws-region: eu-west-1
-        
-        
         
         - name: Zip Files
           run: zip -r aws_lambda.zip ./
