@@ -29,6 +29,11 @@
 
         - name: Checkout Repository
           uses: actions/checkout@v4
+        
+        - name: Replace Env
+          run: |
+            env=${{ inputs.environment }}
+            sed -i s@[ENV]@${env,,}@g config/${{ inputs.CUSTOMER }}.json
 
         - uses: aws-actions/configure-aws-credentials@v4 
           with:
