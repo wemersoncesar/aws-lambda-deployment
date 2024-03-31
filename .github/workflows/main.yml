@@ -27,39 +27,23 @@
 
         - name: "Print options"
           run: |
-            echo "Customer: $CUSTOMER"
-            echo "Environment: $ENVIRONMENT"
-            echo "key-id-name=${{ env.CUSTOMER }}_${{ inputs.env }}" >> $GITHUB_ENV
-          env:
-            CUSTOMER: ${{ inputs.customer }}
-            ENVIRONMENT: ${{ inputs.env }}
-            AWS_ACCESS_KEY_ID_NAME: ${{ env.CUSTOMER }}_${{ inputs.env }}
-            AWS_SECRET_ACCESS_KEY: ${{ env.CUSTOMER }}_${{ inputs.env }}_AWS_SECRET_ACCESS_KEY
-            
-        - run: |
-            echo ${{ vars[format('{0}_AWS_ACCESS_KEY_ID', env.key-id-name)] }}
-
-        - name: Prepare repo directory
-          run: |
-              mkdir -p ./lambda-code
-              cd ./lambda-code
+            echo "custumer-env-name=${{ env.CUSTOMER }}_${{ inputs.env }}" >> $GITHUB_ENV
 
         - name: Checkout Repository
           uses: actions/checkout@v4
         
-        - uses: aws-actions/configure-aws-credentials@v4
-          if: ${{ inputs.customer == 'C1' &&  inputs.env == 'dev' }}
-          with:
-            aws-access-key-id: ${{ vars[format('{0}_AWS_ACCESS_KEY_ID', env.key-id-name)] }}
-            aws-secret-access-key: ${{ secrets.C1_DEV_AWS_SECRET_ACCESS_KEY }}
-            aws-region: eu-west-1
+        - name: Replace Env
+          run: |
+            env=${{ inputs.env }}
+            sed -i s@[ENV]@${env,,}@g config/config.json
 
-        - uses: aws-actions/configure-aws-credentials@v4
-          if: ${{ inputs.customer == 'C2' &&  inputs.env == 'dev' }}
+        - uses: aws-actions/configure-aws-credentials@v4 
           with:
-            aws-access-key-id: ${{ vars.C2_DEV_AWS_ACCESS_KEY_ID }}
-            aws-secret-access-key: ${{ secrets.C2_DEV_AWS_SECRET_ACCESS_KEY }}
+            aws-access-key-id: ${{ vars[format('{0}_AWS_ACCESS_KEY_ID', env.custumer-env-name)] }}
+            aws-secret-access-key: ${{ secrets[format('{0}_AWS_SECRET_ACCESS_KEY', env.custumer-env-name)] }}
             aws-region: eu-west-1
+        
+        
         
         - name: Zip Files
           run: zip -r aws_lambda.zip ./
