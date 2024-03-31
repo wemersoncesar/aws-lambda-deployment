@@ -5,7 +5,7 @@
         customer: 
           description: "Customer"
           required: true
-          default: "Client1"
+          default: "C1"
           type: choice
           options:
             - C1
@@ -13,6 +13,7 @@
         environment:
           description: "Environment"
           required: true
+          default: "DEV"
           type: choice
           options:
             - DEV
@@ -33,7 +34,8 @@
         - name: Replace Env
           run: |
             env=${{ inputs.environment }}
-            sed -i s@[ENV]@${env,,}@g config/${{ inputs.CUSTOMER }}.json
+            customer=${{ inputs.CUSTOMER }}
+            sed -i s@[ENV]@${env,,}@g config/${customer,,}.json
 
         - uses: aws-actions/configure-aws-credentials@v4 
           with:
