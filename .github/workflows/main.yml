@@ -35,7 +35,7 @@
           run: |
             env=${{ inputs.environment }}
             customer=${{ inputs.CUSTOMER }}
-            sed -i -e 's/[ENV]/${env,,}/g' config/${customer,,}.json
+            sed -i -e 's/#ENV/${env,,}/g' config/${customer,,}.json
 
         - uses: aws-actions/configure-aws-credentials@v4 
           with:
