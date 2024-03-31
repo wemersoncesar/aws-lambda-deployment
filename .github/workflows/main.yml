@@ -32,11 +32,11 @@
           env:
             CUSTOMER: ${{ inputs.customer }}
             ENVIRONMENT: ${{ inputs.env }}
-            AWS_ACCESS_KEY_ID: ${{ env.CUSTOMER }}_${{ inputs.env }}_AWS_ACCESS_KEY_ID
+            AWS_ACCESS_KEY_ID_NAME: ${{ env.CUSTOMER }}_${{ inputs.env }}
             AWS_SECRET_ACCESS_KEY: ${{ env.CUSTOMER }}_${{ inputs.env }}_AWS_SECRET_ACCESS_KEY
             
         - run: |
-            echo ${{ vars[format('{0}', env.AWS_ACCESS_KEY_ID)] }}
+            echo ${{ vars[format('{0}_AWS_ACCESS_KEY_ID', env.CUSTOMER)] }}
 
         - name: Prepare repo directory
           run: |
