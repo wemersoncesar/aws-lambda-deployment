@@ -29,6 +29,7 @@
           run: |
             echo "Customer: $CUSTOMER"
             echo "Environment: $ENVIRONMENT"
+            echo "key-id-name=${{ env.CUSTOMER }}_${{ inputs.env }}" >> $GITHUB_ENV
           env:
             CUSTOMER: ${{ inputs.customer }}
             ENVIRONMENT: ${{ inputs.env }}
@@ -36,7 +37,7 @@
             AWS_SECRET_ACCESS_KEY: ${{ env.CUSTOMER }}_${{ inputs.env }}_AWS_SECRET_ACCESS_KEY
             
         - run: |
-            echo ${{ vars[format('{0}_AWS_ACCESS_KEY_ID', env.CUSTOMER)] }}
+            echo ${{ vars[format('{0}_AWS_ACCESS_KEY_ID', env.key-id-name)] }}
 
         - name: Prepare repo directory
           run: |
