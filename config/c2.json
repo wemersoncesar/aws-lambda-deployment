@@ -1,0 +1,32 @@
+{
+    "bucket_base_name":{
+      "data": "lnkt-flat-bucket",
+      "application": "lnkt-prophet-bucket"
+    },
+    "environment_variables":[
+      "CUSTOMER_ID",
+      "CUSTOMER_OACI_CODE",
+      "ENVIRONMENT",
+      "MONGO_URI",
+      "REGION",
+      "EMR_NAME",
+      "EMR_LOGS_URI",
+      "EMR_VERSION",
+      "EMR_JOB_FLOW_ROLE",
+      "EMR_SERVICE_ROLE",
+      "EC2_KEY_NAME",
+      "EC2_SUBNET_ID",
+      "INSTANCE_COUNT",
+      "MASTER_INSTANCE_TYPE",
+      "SLAVE_INSTANCE_TYPE",
+      "SECURITY_GROUP",
+      "SERVICE_ACCESS_SECURITY_GROUP"
+    ], 
+    "jobArgs":{
+      "jobOne":[
+        "--checkpoint-path", "s3://my-checkpoint-[ENV]/preprocessor-checkpoints-16",
+        "--input-folder", "s3://my-bucket-[ENV]/{G-VNEW,G-VBEL}/*-0-*.csv"
+      ]
+  }
+ 
+}
