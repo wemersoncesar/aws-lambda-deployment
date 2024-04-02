@@ -3,13 +3,13 @@
     workflow_dispatch:
       inputs:
         customer:
-        description: "Customer:"
-        required: true
-        default: "C8"
-        type: choice
-        options:
-          - C8
-          - C11
+          description: "Customer:"
+          required: true
+          default: "C8"
+          type: choice
+          options:
+            - C8
+            - C11
         environment:
           description: "Environment:"
           required: true
