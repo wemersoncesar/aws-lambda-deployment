@@ -1,48 +1,51 @@
-  name: deploy to lambda
+  name: Deploy Lambda Function
   on:
     workflow_dispatch:
-    push:
-      branches:
-        - main
-      paths:
-        - '**.py'
+      inputs:
+        customer: 
+          description: "Customer"
+          required: true
+          default: "C1"
+          type: choice
+          options:
+            - C1
+            - C2
+        environment:
+          description: "Environment"
+          required: true
+          default: "DEV"
+          type: choice
+          options:
+            - DEV
+            - ACC
+
   jobs:
     deploy:
       runs-on: ubuntu-latest
-
       steps:
-        - name: Prepare repo directory
+
+        - name: "Print options"
           run: |
-              mkdir -p ./lambda-code
-              cd ./lambda-code
+            echo "custumer-env-name=${{ inputs.CUSTOMER }}_${{ inputs.environment }}" >> $GITHUB_ENV
 
         - name: Checkout Repository
-          uses: actions/checkout@v2
-
+          uses: actions/checkout@v4
         
-      
-        - name: List artefact files with their timestamps to show that builds/downloads succeeded
-          run: ls -lha
-        - name: Install aws cli using pip3
-          run: pip3 install awscli
+        - name: Replace Env
+          run: |
+            env=${{ inputs.environment }}
+            filename=${{ inputs.CUSTOMER }}.json 
+            sed -i -e "s/#ENV/${env,,}/g" config/${filename,,}
+            mv config/${filename,,} config.json
 
-        - name: Configure AWS credentials
-          run: aws configure set aws_access_key_id ${{ vars.AWS_ACCESS_KEY_ID }} && aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
+        - uses: aws-actions/configure-aws-credentials@v4 
+          with:
+            aws-access-key-id: ${{ vars[format('{0}_AWS_ACCESS_KEY_ID', env.custumer-env-name)] }}
+            aws-secret-access-key: ${{ secrets[format('{0}_AWS_SECRET_ACCESS_KEY', env.custumer-env-name)] }}
+            aws-region: eu-west-1
         
         - name: Zip Files
           run: zip -r aws_lambda.zip ./
-
-        - name: Upload Zip file to AWS S3
-          run: |
-            # Constants
-            S3_BUCKET=w-emr-code-deployment
-            S3_KEY=aws_lambda.zip
-            LAMBDA_FUNCTION_NAME=testGitHubActionsDeploy
-
-            echo "Uploading files to S3"
-            aws s3 cp aws_lambda.zip s3://w-emr-code-deployment/lambda-emr/
-            echo "Upload finished!"
 
         - name: Update Lambda
           run:  |
@@ -51,6 +54,5 @@
             pwd
             aws lambda update-function-code \
             --function-name testGitHubActionsDeploy \
-            --s3-bucket w-emr-code-deployment \
-            --s3-key lambda-emr/aws_lambda.zip  \
+            --zip-file fileb://./aws_lambda.zip  \
             --region eu-west-1

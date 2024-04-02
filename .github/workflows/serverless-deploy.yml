@@ -1,0 +1,55 @@
+  name: Test Sam
+  on:
+    workflow_dispatch:
+      inputs:
+        customer: 
+          description: "Customer"
+          required: true
+          default: "Client1"
+          type: choice
+          options:
+            - Client1
+            - Client2
+        env:
+          description: "Environment"
+          required: true
+          type: choice
+          options:
+            - DEV
+            - ACC
+
+
+  jobs: 
+    deploy:
+      runs-on: ubuntu-latest
+
+      steps:
+        - uses: actions/checkout@v3
+        - uses: aws-actions/setup-sam@v2
+          
+          with:
+            use-installer: true
+        - uses: aws-actions/configure-aws-credentials@v2
+          with:
+            aws-access-key-id: ${{ vars.C1_DEV_AWS_ACCESS_KEY_ID }}
+            aws-secret-access-key: ${{ secrets.C1_DEV_AWS_SECRET_ACCESS_KEY }}
+            aws-region: eu-west-1
+        
+        - name: Zip Files
+          run: zip -r aws_lambda.zip ./
+        - name: Set AWS Token
+          run: |
+              if: startsWith(github.ref_name, 'dev-')
+                  echo "AWS_TOKEN=${{ secrets.AWS_LAMBDA_TOKEN_DEV }}" >> $GITHUB_ENV 
+              elif github.ref_name == 'main'
+                  echo "AWS_TOKEN=${{ secrets.AWS_LAMBDA_TOKEN_PROD }}" >> $GITHUB_ENV 
+                  
+        - name: Update Lambda
+          run:  |
+            ls -la
+            # Update Lambda function code
+            pwd
+            aws lambda update-function-code \
+            --function-name testGitHubActionsDeploy \
+            --zip-file fileb://./aws_lambda.zip  \
+            --region eu-west-1

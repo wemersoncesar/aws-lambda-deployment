@@ -1,0 +1,27 @@
+name: reusable workflow
+
+on:
+  workflow_call:
+    inputs:
+      stage:
+        required: true
+        type: string
+    secrets:
+      AWS_ACCESS_KEY_ID:
+        required: true
+      AWS_SECRET_ACCESS_KEY:
+        required: true
+
+jobs:
+  deploy:
+    name: deploy
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [14.x]
+    steps:
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ vars.C1_DEV_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.C1_DEV_AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-1
