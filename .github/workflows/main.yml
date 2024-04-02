@@ -2,22 +2,30 @@
   on:
     workflow_dispatch:
       inputs:
-        customer: 
-          description: "Customer"
-          required: true
-          default: "C1"
-          type: choice
-          options:
-            - C1
-            - C2
+        customer:
+        description: "Customer:"
+        required: true
+        default: "C8"
+        type: choice
+        options:
+          - C8
+          - C11
         environment:
-          description: "Environment"
+          description: "Environment:"
           required: true
           default: "DEV"
           type: choice
           options:
             - DEV
             - ACC
+      target-aws-lambda-function:
+        required: true
+        description: "Target AWS Lambda Function:"
+        type: string 
+      region:
+        required: true
+        description: "Target region:"
+        type: string 
 
   jobs:
     deploy:
