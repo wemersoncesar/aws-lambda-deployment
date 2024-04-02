@@ -8,8 +8,8 @@
           default: "C8"
           type: choice
           options:
-            - C8
-            - C11
+            - C1
+            - C2
         environment:
           description: "Environment:"
           required: true
