@@ -18,14 +18,14 @@
           options:
             - DEV
             - ACC
-      target-aws-lambda-function:
-        required: true
-        description: "Target AWS Lambda Function:"
-        type: string 
-      region:
-        required: true
-        description: "Target region:"
-        type: string 
+        target-aws-lambda-function:
+          required: true
+          description: "Target AWS Lambda Function:"
+          type: string 
+        region:
+          required: true
+          description: "Target region:"
+          type: string 
 
   jobs:
     deploy:
