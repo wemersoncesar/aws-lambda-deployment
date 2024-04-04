@@ -1,0 +1,24 @@
+  name: ADD Envirionment
+  on:
+    workflow_dispatch:
+      inputs:
+        customer: 
+          description: "Customer"
+          required: true
+          default: "C1"
+          type: choice
+          options:
+            - C1
+            - C2
+        environment:
+          description: "Environment"
+          required: true
+          default: "DEV"
+          type: choice
+          options:
+            - DEV
+            - ACC
+
+  jobs:
+    call-reusable-workflow: 
+      uses: ./.github/workflows/deploy-dev.yml 

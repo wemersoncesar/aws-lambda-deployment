@@ -1,0 +1,9 @@
+.DS_Store
+
+# idea
+.idea
+.idea_modules
+/.worksheet/
+
+# Visual Studio Code
+.vscode
