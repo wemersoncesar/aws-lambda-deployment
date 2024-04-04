@@ -14,7 +14,7 @@ jobs:
     steps:
       - uses: aws-actions/configure-aws-credentials@v4 
         with:
-          aws-access-key-id: ${{ vars[format('{0}_AWS_ACCESS_KEY_ID', 'C1')] }}
+          aws-access-key-id: ${{ secrets[format('{0}_AWS_ACCESS_KEY_ID', 'C1')] }}
           aws-secret-access-key: ${{ secrets[format('{0}_AWS_SECRET_ACCESS_KEY', 'C1')] }}
           aws-region: eu-west-1
       - name: Say OK
