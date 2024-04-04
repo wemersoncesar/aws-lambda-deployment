@@ -22,3 +22,5 @@
   jobs:
     call-reusable-workflow: 
       uses: ./.github/workflows/deploy-dev.yml 
+      with:
+        stage: DEV
