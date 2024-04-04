@@ -6,10 +6,16 @@ on:
       - dev
 
 jobs:
-  call-reusable-workflow:
-    uses: ./.github/workflows/reusable-workflow.yml
-    with:
-      stage: dev
-    secrets:
-      AWS_ACCESS_KEY_ID: ${{ vars.C1_DEV_AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.C1_DEV_AWS_SECRET_ACCESS_KEY }}
+  DEV:
+    runs-on: ubuntu-latest
+    environment: DEV
+    steps:
+      - uses: aws-actions/configure-aws-credentials@v4 
+        with:
+          aws-access-key-id: ${{ vars[format('{0}_AWS_ACCESS_KEY_ID', env.custumer-env-name)] }}
+          aws-secret-access-key: ${{ secrets[format('{0}_AWS_SECRET_ACCESS_KEY', env.custumer-env-name)] }}
+          aws-region: eu-west-1
+      - name: Say OK
+        run: |
+          echo " OK "
+ 
