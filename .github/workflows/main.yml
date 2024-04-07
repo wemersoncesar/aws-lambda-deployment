@@ -49,7 +49,7 @@
             filename="${CUSTOMER_CODE}.json"
             sed -i -e "s/#ENV/${env,,}/g" config/${filename,,}
             mv config/${filename,,} config.json
-
+            rm -rf ./config/
 
         - uses: aws-actions/configure-aws-credentials@v4 
           with:
