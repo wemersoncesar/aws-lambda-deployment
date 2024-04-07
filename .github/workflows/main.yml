@@ -50,9 +50,6 @@
             sed -i -e "s/#ENV/${env,,}/g" config/${filename,,}
             mv config/${filename,,} config.json
 
-        - name: "Print options"
-          run: |
-            echo "custumer-env-name=${{ inputs.CUSTOMER }}_${{ inputs.environment }}" >> $GITHUB_ENV
 
         - uses: aws-actions/configure-aws-credentials@v4 
           with:
