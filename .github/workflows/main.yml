@@ -31,8 +31,20 @@
         - name: Checkout Repository
           uses: actions/checkout@v4
         
-        - name: Replace Env
+        - name: Replace Env 
           run: |
+            customer_name=${{ inputs.customer }} 
+            aws_env=""
+            if [ ${{ inputs.environment }} == "DEV" || ${{ inputs.environment }} == "ACC" ]; then
+              aws_env="NoProd"
+            else
+              aws_env="Prod"
+            fi
+
+            CUSTOMER_CODE=$(jq -r --arg CUSTOMER_NAME "$customer_name" --arg ENV "$aws_env" '.customers[] | select(.name==$customer_name) | .codes[$aws_env]' config/customers.json)
+
+            echo $CUSTOMER_CODE
+
             env=${{ inputs.environment }}
             filename=${{ inputs.CUSTOMER }}.json 
             sed -i -e "s/#ENV/${env,,}/g" config/${filename,,}

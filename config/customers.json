@@ -1,0 +1,18 @@
+{
+  "customers": [
+    {
+      "name": "NBT",
+      "codes": {
+        "NoProd": "C11",
+        "Prod": "C18"
+      }
+    },
+    {
+      "name": "VA",
+      "codes": {
+        "NoProd": "C8",
+        "Prod": "C12"
+      }
+    }
+  ]
+}
