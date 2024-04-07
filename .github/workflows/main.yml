@@ -24,10 +24,6 @@
       runs-on: ubuntu-latest
       steps:
 
-        - name: "Print options"
-          run: |
-            echo "custumer-env-name=${{ inputs.CUSTOMER }}_${{ inputs.environment }}" >> $GITHUB_ENV
-
         - name: Checkout Repository
           uses: actions/checkout@v4
         
@@ -47,10 +43,16 @@
             echo "CUSTOMER_CODE: ${CUSTOMER_CODE}"
             echo 
 
+            echo "custumer-env-name=${{ inputs.CUSTOMER }}_${{ inputs.environment }}" >> $GITHUB_ENV
+            
             env=${{ inputs.environment }}
             filename=${{ inputs.CUSTOMER }}.json 
             sed -i -e "s/#ENV/${env,,}/g" config/${filename,,}
             mv config/${filename,,} config.json
+
+        - name: "Print options"
+          run: |
+            echo "custumer-env-name=${{ inputs.CUSTOMER }}_${{ inputs.environment }}" >> $GITHUB_ENV
 
         - uses: aws-actions/configure-aws-credentials@v4 
           with:
