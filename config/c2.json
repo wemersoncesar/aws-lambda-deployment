@@ -24,8 +24,8 @@
     ], 
     "jobArgs":{
       "jobOne":[
-        "--checkpoint-path", "s3://my-checkpoint-#ENV/preprocessor-checkpoints-16",
-        "--input-folder", "s3://my-bucket-#ENV/{G-VNEW,G-VBEL}/*-0-*.csv"
+        "--checkpoint-path", "s3://my-checkpoint-#CUSTOMER-#ENV/preprocessor-checkpoints-16",
+        "--input-folder", "s3://my-bucket-#CUSTOMER-#ENV/{G-VNEW,G-VBEL}/*-0-*.csv"
       ]
   }
  

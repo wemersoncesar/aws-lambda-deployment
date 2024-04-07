@@ -37,24 +37,24 @@
               AWS_ENV="Prod"
             fi
             echo "env: ${AWS_ENV} "
-          
+
+            # Query on customers.json
             CUSTOMER_CODE=$(jq -r --arg CUSTOMER_NAME "$CUSTOMER_NAME" --arg ENV_KEY "$AWS_ENV" '.customers[] | select(.name==$CUSTOMER_NAME) | .codes[$ENV_KEY]' config/customers.json)
-
-            echo "CUSTOMER_CODE: ${CUSTOMER_CODE}"
-            echo 
-
-            echo "custumer-env-name=${CUSTOMER_CODE}_${{ inputs.environment }}" >> $GITHUB_ENV
+ 
+            # Write customer code and Env to GH-Env
+            echo "custumer_code_env=${CUSTOMER_CODE}_${{ inputs.environment }}" >> $GITHUB_ENV
 
             env=${{ inputs.environment }}
             filename="${CUSTOMER_CODE}.json"
-            sed -i -e "s/#ENV/${env,,}/g" config/${filename,,}
+
+            sed -i  "s/#ENV/${env,,}/g"; "s/#CUSTOMER/${CUSTOMER_CODE,,}/g" config/${filename,,}
             mv config/${filename,,} config.json
             rm -rf ./config/
 
         - uses: aws-actions/configure-aws-credentials@v4 
           with:
-            aws-access-key-id: ${{ vars[format('{0}_AWS_ACCESS_KEY_ID', env.custumer-env-name)] }}
-            aws-secret-access-key: ${{ secrets[format('{0}_AWS_SECRET_ACCESS_KEY', env.custumer-env-name)] }}
+            aws-access-key-id: ${{ vars[format('{0}_AWS_ACCESS_KEY_ID', env.custumer_code_env)] }}
+            aws-secret-access-key: ${{ secrets[format('{0}_AWS_SECRET_ACCESS_KEY', env.custumer_code_env)] }}
             aws-region: eu-west-1
         
         - name: Zip Files
