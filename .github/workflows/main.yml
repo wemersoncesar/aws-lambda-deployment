@@ -5,7 +5,6 @@
         customer: 
           description: "Customer"
           required: true
-          default: "C1"
           type: choice
           options:
             - NBT
@@ -18,6 +17,7 @@
           options:
             - DEV
             - ACC
+            - PRD
 
   jobs:
     deploy:
@@ -27,26 +27,28 @@
         - name: Checkout Repository
           uses: actions/checkout@v4
         
-        - name: Replace Env  
+        - name: Prepare Customer configuration  
           run: |
             CUSTOMER_NAME=${{ inputs.customer }} 
+
             AWS_ENV=""
             if [ ${{ inputs.environment }} == "DEV" ] || [ ${{ inputs.environment }} == "ACC" ]; then
               AWS_ENV="NoProd"
             else
               AWS_ENV="Prod"
-            fi
-            echo "env: ${AWS_ENV} "
+            fi 
 
             # Query on customers.json
-            CUSTOMER_CODE=$(jq -r --arg CUSTOMER_NAME "$CUSTOMER_NAME" --arg ENV_KEY "$AWS_ENV" '.customers[] | select(.name==$CUSTOMER_NAME) | .codes[$ENV_KEY]' config/customers.json)
+            CUSTOMER_CODE=$(jq -r --arg CUSTOMER_NAME "$CUSTOMER_NAME" --arg ENV_KEY "$AWS_ENV" '.customers[] 
+            | select(.name==$CUSTOMER_NAME) | .codes[$ENV_KEY]' config/customers.json)
  
-            # Write customer code and Env to GH-Env
+            # Write customer code & Env to GH-Env
             echo "custumer_code_env=${CUSTOMER_CODE}_${{ inputs.environment }}" >> $GITHUB_ENV
 
             env=${{ inputs.environment }}
             filename="${CUSTOMER_CODE}.json"
 
+            # Prepare customer config file
             sed -i  "s/#ENV/${env,,}/g;s/#CUSTOMER/${CUSTOMER_CODE,,}/g" config/${filename,,}
             mv config/${filename,,} config.json
             rm -rf ./config/
