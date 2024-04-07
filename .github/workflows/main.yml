@@ -47,7 +47,7 @@
             env=${{ inputs.environment }}
             filename="${CUSTOMER_CODE}.json"
 
-            sed -i  "s/#ENV/${env,,}/g"; "s/#CUSTOMER/${CUSTOMER_CODE,,}/g" config/${filename,,}
+            sed -i  "s/#ENV/${env,,}/g;s/#CUSTOMER/${CUSTOMER_CODE,,}/g" config/${filename,,}
             mv config/${filename,,} config.json
             rm -rf ./config/
 
