@@ -40,9 +40,10 @@
             else
               aws_env="Prod"
             fi
-
+            echo "env: "
+            echo ${aws_env}
             CUSTOMER_CODE=$(jq -r --arg CUSTOMER_NAME "${customer_name}" --arg ENV "${aws_env}" '.customers[] | select(.name=="${customer_name}") | .codes["${aws_env}"]' config/customers.json)
-
+            echo "result: "
             echo ${CUSTOMER_CODE}
 
             env=${{ inputs.environment }}
