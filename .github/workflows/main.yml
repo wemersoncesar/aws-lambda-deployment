@@ -41,7 +41,7 @@
               aws_env="Prod"
             fi
 
-            CUSTOMER_CODE=$(jq -r --arg CUSTOMER_NAME "${customer_name}" --arg ENV "${aws_env}" '.customers[] | select(.name==${customer_name}) | .codes[${aws_env}]' config/customers.json)
+            CUSTOMER_CODE=$(jq -r --arg CUSTOMER_NAME "${customer_name}" --arg ENV "${aws_env}" '.customers[] | select(.name=="${customer_name}") | .codes["${aws_env}"]' config/customers.json)
 
             echo $CUSTOMER_CODE
 
