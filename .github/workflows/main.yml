@@ -35,7 +35,7 @@
           run: |
             customer_name=${{ inputs.customer }} 
             aws_env=""
-            if [ ${{ inputs.environment }} == "DEV" || ${{ inputs.environment }} == "ACC" ]; then
+            if [ ${{ inputs.environment }} == "DEV" ] || [ ${{ inputs.environment }} == "ACC" ]; then
               aws_env="NoProd"
             else
               aws_env="Prod"
