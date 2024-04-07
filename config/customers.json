@@ -3,15 +3,15 @@
     {
       "name": "NBT",
       "codes": {
-        "NoProd": "C11",
-        "Prod": "C18"
+        "NoProd": "c1",
+        "Prod": "c3"
       }
     },
     {
       "name": "VA",
       "codes": {
-        "NoProd": "C8",
-        "Prod": "C12"
+        "NoProd": "c2",
+        "Prod": "c12"
       }
     }
   ]
