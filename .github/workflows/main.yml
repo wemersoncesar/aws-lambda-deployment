@@ -8,8 +8,8 @@
           default: "C1"
           type: choice
           options:
-            - C1
-            - C2
+            - NBT
+            - VA
         environment:
           description: "Environment"
           required: true
