@@ -46,7 +46,7 @@
             echo "custumer-env-name=${CUSTOMER_CODE}_${{ inputs.environment }}" >> $GITHUB_ENV
 
             env=${{ inputs.environment }}
-            filename=${{ inputs.CUSTOMER }}.json 
+            filename="${CUSTOMER_CODE}.json"
             sed -i -e "s/#ENV/${env,,}/g" config/${filename,,}
             mv config/${filename,,} config.json
 
