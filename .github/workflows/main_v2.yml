@@ -47,15 +47,17 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      PREPROCESSOR_VERSION: ${{ inputs.preprocessor-version }}
+      PARSER_VERSION: ${{ inputs.parser-version }}
+      TRANSFORMER_VERSION: ${{ inputs.transformer-version }}
+      MODELS_VERSION: ${{ inputs.models-version }}
+      PUBLISHER_VERSION: ${{ inputs.publisher-version }}
+
     steps:
       - name: Project checkout
         uses: actions/checkout@v4
-        env:
-          PREPROCESSOR_VERSION: ${{ inputs.preprocessor-version }}
-          PARSER_VERSION: ${{ inputs.parser-version }}
-          TRANSFORMER_VERSION: ${{ inputs.transformer-version }}
-          MODELS_VERSION: ${{ inputs.models-version }}
-          PUBLISHER_VERSION: ${{ inputs.publisher-version }}
+
 
       - name: Prepare Customer configuration
         run: |
@@ -77,6 +79,9 @@ jobs:
           # Prepare customer config file
           env=${{ inputs.environment }}
           filename="${CUSTOMER_NAME,,}.json"
+          echo "Preprocessor version"
+          
+          echo $PREPROCESSOR_VERSION
           
           sed -i  "s/#ENV/${env,,}/g; 
             s/#S3BUCKET/${{ vars.AWS_SHARED_S3_BUCKET }}/g;
