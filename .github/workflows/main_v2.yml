@@ -1,26 +1,121 @@
-  name: ADD Envirionment
-  on:
-    workflow_dispatch:
-      inputs:
-        customer: 
-          description: "Customer"
-          required: true
-          default: "C1"
-          type: choice
-          options:
-            - C1
-            - C2
-        environment:
-          description: "Environment"
-          required: true
-          default: "DEV"
-          type: choice
-          options:
-            - DEV
-            - ACC
+---
+name: Deploy AWS Lambda
 
-  jobs:
-    call-reusable-workflow: 
-      uses: ./.github/workflows/deploy-dev.yml 
-      with:
-        stage: DEV
+on:
+
+  workflow_dispatch:
+    inputs:
+      customer:
+        description: "Customer:"
+        required: true
+        type: choice
+        options:
+          - c1
+          - c2
+      environment:
+        description: "Environment:"
+        required: true
+        default: "DEV"
+        type: choice
+        options:
+          - DEV
+          - PRD
+      target-aws-lambda-function:
+        required: true
+        description: "Target AWS Lambda Function:"
+        type: string
+      region:
+        required: true
+        description: "Target region:"
+        type: string
+      preprocessor-version:
+        required: true
+        description: Version of preprocessor job
+      parser-version:
+        required: true
+        description: Version of parser job
+      transformer-version:
+        required: true
+        description: Version of transformer job
+      models-version:
+        required: true
+        description: Version of models job
+      publisher-version:
+        required: true
+        description: Version of publisher job
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Project checkout
+        uses: actions/checkout@v4
+
+        env:
+          
+          PREPROCESSOR_VERSION: ${{ inputs.preprocessor-version }}
+          PARSER_VERSION: ${{ inputs.parser-version }}
+          TRANSFORMER_VERSION: ${{ inputs.transformer-version }}
+          MODELS_VERSION: ${{ inputs.models-version }}
+          PUBLISHER_VERSION: ${{ inputs.publisher-version }}
+
+      - name: Prepare Customer configuration
+        run: |
+          CUSTOMER_NAME=${{ inputs.customer }}
+          
+          AWS_ENV=""
+          if [ ${{ inputs.environment }} == "DEV" ] || [ ${{ inputs.environment }} == "ACC" ]; then
+            AWS_ENV="NoProd"
+          else
+            AWS_ENV="Prod"
+          fi
+          
+          # Query on customers.json
+          CUSTOMER_CODE=$(jq -r --arg CUSTOMER_NAME_KEY "$CUSTOMER_NAME" --arg ENV_KEY "$AWS_ENV" '.customers[] |
+          select(.name==$CUSTOMER_NAME_KEY) | .AWSEnv[$ENV_KEY]' config/customers.json)
+          
+          # Write variables to GH-Env
+          echo "custumer-env-name=${CUSTOMER_CODE^^}_${AWS_ENV^^}" >> $GITHUB_ENV
+          echo "zip-filename=afklprgns_prognos_lambda_function_${AWS_ENV^^}_$(cat version.txt).zip" >> $GITHUB_ENV
+          
+          # Prepare customer config file
+          env=${{ inputs.environment }}
+          filename="${CUSTOMER_CODE,,}.json"
+          
+          sed -i  "s/#ENV/${env,,}/g; \
+          s/#S3BUCKET/${{ AWS_SHARED_S3_BUCKET }}/g" \
+          s/#PREPROCESSOR_VERSION/${PREPROCESSOR_VERSION}/g" \
+          s/#PARSER_VERSION/${PARSER_VERSION}/g" \
+          s/#TRANSFORMER_VERSION/${TRANSFORMER_VERSION}/g" \
+          s/#MODELS_VERSION/${MODELS_VERSION}/g" \
+          s/#PUBLISHER_VERSION/${PUBLISHER_VERSION}/g" config/${filename}
+          
+          mv config/${filename} config.json
+          rm -rf ./config/
+
+      - name: Zip Files
+        run: |
+          filename="${{ env.zip-filename }}"
+          (zip -r ./${filename} ./ -i '*.py' '*.json')
+          ls -lah
+
+      - name: Set AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets[format('AWS_ACCESS_KEY_ID_{0}', env.custumer-env-name)] }}
+          aws-secret-access-key: ${{ secrets[format('AWS_SECRET_ACCESS_KEY_{0}', env.custumer-env-name)] }}
+          aws-region: ${{ inputs.region }}
+
+      - name: Update Lambda
+        run: |
+          # Get version.txt
+          filename="${{ env.zip-filename }}"
+          
+          # Upload lambda funtion to S3
+          aws s3 cp ./${filename} s3://${{ AWS_SHARED_S3_BUCKET }}/prognos-lambda-code/
+          
+          # Update Lambda function code
+          aws lambda update-function-code \
+          --function-name ${{ inputs.target-aws-lambda-function }} \
+          --zip-file fileb://${filename}  \
+          --region ${{ inputs.region }}
