@@ -82,7 +82,7 @@ jobs:
           
           sed -i  "s/#ENV/${env,,}/g; 
             s/#S3BUCKET/${{ env.AWS_SHARED_S3_BUCKET }}/g
-            s/#PREPROCESSOR_VERSION/${PREPROCESSOR_VERSION}/g;= 
+            s/#PREPROCESSOR_VERSION/${PREPROCESSOR_VERSION}/g  
             s/#PARSER_VERSION/${PARSER_VERSION}/g
             s/#TRANSFORMER_VERSION/${TRANSFORMER_VERSION}/g
             s/#MODELS_VERSION/${MODELS_VERSION}/g
