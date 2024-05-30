@@ -81,7 +81,7 @@ jobs:
           env=${{ inputs.environment }}
           filename="${CUSTOMER_CODE,,}.json"
           
-          sed -i  's/#ENV/${env,,}/g' config/${filename}
+          sed -i  's/#ENV/${env,,}/g' config/c1.json
           
           mv config/${filename} config.json
           ls -lah
