@@ -18,21 +18,6 @@
             - DEV
             - ACC
             - PRD
-        preprocessor-version:
-          required: true
-          description: Version of preprocessor job
-        parser-version:
-          required: true
-          description: Version of parser job
-        transformer-version:
-          required: true
-          description: Version of transformer job
-        models-version:
-          required: true
-          description: Version of models job
-        publisher-version:
-          required: true
-          description: Version of publisher job
 
   jobs:
     deploy:
