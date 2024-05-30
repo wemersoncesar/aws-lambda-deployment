@@ -61,9 +61,7 @@ jobs:
 
       - name: Prepare Customer configuration
         run: |
-          
-          
-          CUSTOMER_NAME=${{ inputs.customer }}
+          customer_name=${{ inputs.customer }}
           
           AWS_ENV=""
           if [ ${{ inputs.environment }} == "DEV" ] || [ ${{ inputs.environment }} == "ACC" ]; then
@@ -78,21 +76,18 @@ jobs:
 
           # Prepare customer config file
           env=${{ inputs.environment }}
-          filename="${CUSTOMER_NAME,,}.json"
-          echo "Preprocessor version"
-          
-          echo $PREPROCESSOR_VERSION
+          config_filename="${customer_name,,}.json"
           
           sed -i  "s/#ENV/${env,,}/g; 
+            s/#CUSTOMER/${customer_name,,}/g;
             s/#S3BUCKET/${{ vars.AWS_SHARED_S3_BUCKET }}/g;
             s/#PREPROCESSOR_VERSION/$PREPROCESSOR_VERSION/g;  
             s/#PARSER_VERSION/$PARSER_VERSION/g;
             s/#TRANSFORMER_VERSION/$TRANSFORMER_VERSION/g;
             s/#MODELS_VERSION/$MODELS_VERSION/g;
-            s/#PUBLISHER_VERSION/$PUBLISHER_VERSION}/g" config/${filename}
+            s/#PUBLISHER_VERSION/$PUBLISHER_VERSION/g" config/${config_filename}
           
-          mv config/${filename} config.json
-          ls -lah
+          mv config/${config_filename} config.json
           rm -rf ./config/
 
       - name: Zip Files
