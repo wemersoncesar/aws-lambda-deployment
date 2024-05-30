@@ -59,6 +59,8 @@ jobs:
 
       - name: Prepare Customer configuration
         run: |
+          
+          
           CUSTOMER_NAME=${{ inputs.customer }}
           
           AWS_ENV=""
@@ -68,6 +70,9 @@ jobs:
             AWS_ENV="Prod"
           fi
           
+          # Write variables to GH-Env
+          echo "custumer-env-name=${CUSTOMER_CODE^^}_${AWS_ENV^^}" >> $GITHUB_ENV
+          echo "zip-filename=afkl_prognos_lambda_function_${AWS_ENV^^}_$(cat version.txt).zip" >> $GITHUB_ENV
 
           # Prepare customer config file
           env=${{ inputs.environment }}
