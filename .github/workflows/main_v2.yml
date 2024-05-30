@@ -83,7 +83,7 @@ jobs:
           
           sed -i  's/#ENV/${env,,}/g' config/c1.json
           
-          mv config/${filename} config.json
+          mv config/c1.json config.json
           ls -lah
           rm -rf ./config/
 
