@@ -68,22 +68,28 @@ jobs:
             AWS_ENV="Prod"
           fi
           
-          # Query on customers.json
-          CUSTOMER_CODE=$(jq -r --arg CUSTOMER_NAME_KEY "$CUSTOMER_NAME" --arg ENV_KEY "$AWS_ENV" '.customers[] |
-          select(.name==$CUSTOMER_NAME_KEY) | .AWSEnv[$ENV_KEY]' config/customers.json)
-          
-          # Write variables to GH-Env
-          echo "custumer-env-name=${CUSTOMER_CODE^^}_${AWS_ENV^^}" >> $GITHUB_ENV
-          echo "zip-filename=afklprgns_prognos_lambda_function_${AWS_ENV^^}_$(cat version.txt).zip" >> $GITHUB_ENV
-          echo "${CUSTOMER_CODE,,}"
-          
+#          # Query on customers.json
+#          CUSTOMER_CODE=$(jq -r --arg CUSTOMER_NAME_KEY "$CUSTOMER_NAME" --arg ENV_KEY "$AWS_ENV" '.customers[] |
+#          select(.name==$CUSTOMER_NAME_KEY) | .AWSEnv[$ENV_KEY]' config/customers.json)
+#
+#          # Write variables to GH-Env
+#          echo "custumer-env-name=${CUSTOMER_CODE^^}_${AWS_ENV^^}" >> $GITHUB_ENV
+#          echo "zip-filename=afklprgns_prognos_lambda_function_${AWS_ENV^^}_$(cat version.txt).zip" >> $GITHUB_ENV
+#          echo "${CUSTOMER_CODE,,}"
+
           # Prepare customer config file
           env=${{ inputs.environment }}
-          filename="${CUSTOMER_CODE,,}.json"
+          filename="${CUSTOMER_NAME,,}.json"
           
-          sed -i  's/#ENV/${env,,}/g' config/c1.json
+          sed -i  "s/#ENV/${env,,}/g; 
+            s/#S3BUCKET/${{ env.AWS_SHARED_S3_BUCKET }}/g;
+            s/#PREPROCESSOR_VERSION/${PREPROCESSOR_VERSION}/g;  
+            s/#PARSER_VERSION/${PARSER_VERSION}/g;
+            s/#TRANSFORMER_VERSION/${TRANSFORMER_VERSION}/g;
+            s/#MODELS_VERSION/${MODELS_VERSION}/g;
+            s/#PUBLISHER_VERSION/${PUBLISHER_VERSION}/g" config/${filename}
           
-          mv config/c1.json config.json
+          mv config/${filename} config.json
           ls -lah
           rm -rf ./config/
 
@@ -96,8 +102,8 @@ jobs:
       - name: Set AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: ${{ secrets[format('AWS_ACCESS_KEY_ID_{0}', env.custumer-env-name)] }}
-          aws-secret-access-key: ${{ secrets[format('AWS_SECRET_ACCESS_KEY_{0}', env.custumer-env-name)] }}
+          aws-access-key-id: ${{ secrets[format('AWS_ACCESS_KEY_ID_{0}', inputs.customer)] }}
+          aws-secret-access-key: ${{ secrets[format('AWS_SECRET_ACCESS_KEY_{0}', inputs.customer)] }}
           aws-region: ${{ inputs.region }}
 
       - name: Update Lambda
