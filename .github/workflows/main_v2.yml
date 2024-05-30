@@ -89,6 +89,7 @@ jobs:
             s/#PUBLISHER_VERSION/${PUBLISHER_VERSION}/g" config/${filename}
           
           mv config/${filename} config.json
+          ls -lah
           rm -rf ./config/
 
       - name: Zip Files
