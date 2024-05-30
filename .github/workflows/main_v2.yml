@@ -78,13 +78,7 @@ jobs:
           env=${{ inputs.environment }}
           filename="${CUSTOMER_NAME,,}.json"
           
-          sed -i  "s/#ENV/${env,,}/g; 
-            s/#S3BUCKET/${{ vars.AWS_SHARED_S3_BUCKET }}/g;
-            s/#PREPROCESSOR_VERSION/${PREPROCESSOR_VERSION}/g;  
-            s/#PARSER_VERSION/${PARSER_VERSION}/g;
-            s/#TRANSFORMER_VERSION/${TRANSFORMER_VERSION}/g;
-            s/#MODELS_VERSION/${MODELS_VERSION}/g;
-            s/#PUBLISHER_VERSION/${PUBLISHER_VERSION}/g" config/${filename}
+          sed -i  "s/#ENV/${env,,}/g; s/#S3BUCKET/${{ vars.AWS_SHARED_S3_BUCKET }}/g;s/#PREPROCESSOR_VERSION/${PREPROCESSOR_VERSION}/g;s/#PARSER_VERSION/${PARSER_VERSION}/g;" config/${filename}
           
           mv config/${filename} config.json
           ls -lah

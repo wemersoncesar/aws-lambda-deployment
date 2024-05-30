@@ -93,10 +93,10 @@
         "--archives s3://#S3BUCKET/klm-prognos-artefacts/prognos-models/prognos-env-10.2.0.tar.gz#python_env",
         "--packages io.delta:delta-core_2.12:2.3.0",
         "--conf spark.yarn.appMasterEnv.PYSPARK_PYTHON=./python_env/bin/python",
-        "--py-files s3://#S3BUCKET/klm-prognos-artefacts/prognos-models/prognos-models-10.2.0-py3-none-any.whl",
-        "--files s3://#S3BUCKET/main/log4j.properties,s3://#S3BUCKET/klm-prognos-artefacts/prognos-models/prognos-models-main-10.2.0.py"
+        "--py-files s3://#S3BUCKET/klm-prognos-artefacts/prognos-models/prognos-models-#MODELS_VERSION-py3-none-any.whl",
+        "--files s3://#S3BUCKET/main/log4j.properties,s3://#S3BUCKET/klm-prognos-artefacts/prognos-models/prognos-models-main-#MODELS_VERSION.py"
       ],
-      "mainPyFile":["s3://#S3BUCKET/klm-prognos-artefacts/prognos-models/prognos-models-main-10.2.0.py"],
+      "mainPyFile":["s3://#S3BUCKET/klm-prognos-artefacts/prognos-models/prognos-models-main-#MODELS_VERSION.py"],
       "applicationArguments":[
         "execute-models",
         "--platform AWS",
