@@ -50,7 +50,6 @@ jobs:
     steps:
       - name: Project checkout
         uses: actions/checkout@v4
-
         env:
           PREPROCESSOR_VERSION: ${{ inputs.preprocessor-version }}
           PARSER_VERSION: ${{ inputs.parser-version }}
@@ -82,7 +81,7 @@ jobs:
           filename="${CUSTOMER_CODE,,}.json"
           
           sed -i  "s/#ENV/${env,,}/g; \
-          s/#S3BUCKET/${{ AWS_SHARED_S3_BUCKET }}/g" \
+          s/#S3BUCKET/${{ env.AWS_SHARED_S3_BUCKET }}/g" \
           s/#PREPROCESSOR_VERSION/${PREPROCESSOR_VERSION}/g" \
           s/#PARSER_VERSION/${PARSER_VERSION}/g" \
           s/#TRANSFORMER_VERSION/${TRANSFORMER_VERSION}/g" \
@@ -111,7 +110,7 @@ jobs:
           filename="${{ env.zip-filename }}"
           
           # Upload lambda funtion to S3
-          aws s3 cp ./${filename} s3://${{ AWS_SHARED_S3_BUCKET }}/prognos-lambda-code/
+          aws s3 cp ./${filename} s3://${{ env.AWS_SHARED_S3_BUCKET }}/prognos-lambda-code/
           
           # Update Lambda function code
           aws lambda update-function-code \
