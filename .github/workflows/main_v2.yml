@@ -10,8 +10,8 @@ on:
         required: true
         type: choice
         options:
-          - c1
-          - c2
+          - c8
+          - c11
       environment:
         description: "Environment:"
         required: true
