@@ -75,6 +75,7 @@ jobs:
           # Write variables to GH-Env
           echo "custumer-env-name=${CUSTOMER_CODE^^}_${AWS_ENV^^}" >> $GITHUB_ENV
           echo "zip-filename=afklprgns_prognos_lambda_function_${AWS_ENV^^}_$(cat version.txt).zip" >> $GITHUB_ENV
+          echo "${CUSTOMER_CODE,,}"
           
           # Prepare customer config file
           env=${{ inputs.environment }}
