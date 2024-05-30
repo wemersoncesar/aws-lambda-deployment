@@ -1,32 +1,134 @@
 {
-    "bucket_base_name":{
-      "data": "lnkt-flat-bucket",
-      "application": "lnkt-prophet-bucket"
-    },
-    "environment_variables":[
-      "CUSTOMER_ID",
-      "CUSTOMER_OACI_CODE",
-      "ENVIRONMENT",
-      "MONGO_URI",
-      "REGION",
-      "EMR_NAME",
-      "EMR_LOGS_URI",
-      "EMR_VERSION",
-      "EMR_JOB_FLOW_ROLE",
-      "EMR_SERVICE_ROLE",
-      "EC2_KEY_NAME",
-      "EC2_SUBNET_ID",
-      "INSTANCE_COUNT",
-      "MASTER_INSTANCE_TYPE",
-      "SLAVE_INSTANCE_TYPE",
-      "SECURITY_GROUP",
-      "SERVICE_ACCESS_SECURITY_GROUP"
-    ], 
-    "jobArgs":{
-      "jobOne":[
-        "--checkpoint-path", "s3://my-checkpoint-#CUSTOMER-#ENV/preprocessor-checkpoints-16",
-        "--input-folder", "s3://my-bucket-#CUSTOMER-#ENV/{G-VNEW,G-VBEL}/*-0-*.csv"
+  "bucket_base_name":{
+    "data": "afkl-flat-bucket",
+    "application": "afkl-prognos-bucket"
+  },
+  "environment_variables":[
+    "CUSTOMER_ID",
+    "CUSTOMER_OACI_CODE",
+    "ENVIRONMENT",
+    "REGION",
+    "EMR_NAME",
+    "EMR_LOGS_URI",
+    "MONGO_URI",
+    "EMR_VERSION",
+    "EMR_JOB_FLOW_ROLE",
+    "EMR_SERVICE_ROLE",
+    "EC2_KEY_NAME",
+    "EC2_SUBNET_ID",
+    "INSTANCE_COUNT",
+    "MASTER_INSTANCE_TYPE",
+    "SLAVE_INSTANCE_TYPE",
+    "SECURITY_GROUP",
+    "SERVICE_ACCESS_SECURITY_GROUP"
+  ],
+  "jobArgs": {
+    "preprocessor": {
+      "runtimeArguments": [
+        "--class com.klm.em.prognos.preprocessor.Preprocessor",
+        "--master yarn",
+        "--deploy-mode cluster",
+        "--files s3://#S3BUCKET/main/log4j.properties",
+        "--conf spark.sql.parquet.fs.optimized.committer.optimization-enabled=true",
+        "--conf spark.streaming.backpressure.enabled=true"
+      ],
+      "applicationArtifact":["s3://#S3BUCKET/klm-prognos-artefacts/prognos-preprocessor/prognos-preprocessor-assembly-#PREPROCESSOR_VERSION.jar"],
+      "applicationArguments":[
+        "-p Aws",
+        "-e Dev",
+        "-s Ags",
+        "-c va",
+        "--checkpoint-path s3://virgin-b787-databases-v1/preprocessor-checkpoints-2024-04-22",
+        "--input-folder s3://afkl-flat-b787-bucket-#CUSTOMER-#ENV/*/{G-VNEW,G-VBEL}/*-0-*.csv",
+        "--output-path s3://virgin-b787-databases-v1/preprocessed/ags",
+        "--ignore-days-before 2023-01-01",
+        "--allow-reprocessing ",
+        "--as-batch ",
+        "--max-files-per-trigger 5"
       ]
+    },
+    "parser": {
+      "runtimeArguments": [
+        "--class com.klm.em.prognos.parser.CplParser",
+        "--master yarn",
+        "--deploy-mode cluster",
+        "--files s3://#S3BUCKET/main/log4j.properties"
+      ],
+      "applicationArtifact":["s3://#S3BUCKET/klm-prognos-artefacts/prognos-parser/prognos-parser-assembly-#PARSER_VERSION.jar"],
+      "applicationArguments":[
+        "-p Aws",
+        "-e Dev",
+        "-s Ags",
+        "-a B787",
+        "-m Unprocessed",
+        "-c va",
+        "--input-folder s3://virgin-b787-databases-v1/preprocessed/ags/B787/raw",
+        "--output-table-name s3://virgin-b787-databases-v1/parsed_ags_b787"
+      ]
+    },
+    "transformer": {
+      "runtimeArguments": [
+        "--class com.klm.em.prognos.transformer.Transformer",
+        "--master yarn",
+        "--deploy-mode cluster",
+        "--files s3://#S3BUCKET/main/log4j.properties"
+      ],
+      "applicationArtifact":["s3://#S3BUCKET/klm-prognos-artefacts/prognos-transformer/prognos-transformer-assembly-#TRANSFORMER_VERSION.jar"],
+      "applicationArguments":[
+        "-p Aws",
+        "-e Dev",
+        "-s Ags",
+        "-a B787",
+        "-m Unprocessed",
+        "-c va",
+        "--input-table-name s3://virgin-b787-databases-v1/parsed_ags_b787",
+        "--output-table-name s3://virgin-b787-databases-v1/enriched_ags_b787",
+        "--invalid-table-name s3://virgin-b787-databases-v1/invalid_ags_b787"
+      ]
+    },
+    "models": {
+      "runtimeArguments": [
+        "--master yarn",
+        "--deploy-mode cluster",
+        "--archives s3://#S3BUCKET/klm-prognos-artefacts/prognos-models/prognos-env-10.2.0.tar.gz#python_env",
+        "--packages io.delta:delta-core_2.12:2.3.0",
+        "--conf spark.yarn.appMasterEnv.PYSPARK_PYTHON=./python_env/bin/python",
+        "--py-files s3://#S3BUCKET/klm-prognos-artefacts/prognos-models/prognos-models-10.2.0-py3-none-any.whl",
+        "--files s3://#S3BUCKET/main/log4j.properties,s3://#S3BUCKET/klm-prognos-artefacts/prognos-models/prognos-models-main-10.2.0.py"
+      ],
+      "mainPyFile":["s3://#S3BUCKET/klm-prognos-artefacts/prognos-models/prognos-models-main-10.2.0.py"],
+      "applicationArguments":[
+        "execute-models",
+        "--platform AWS",
+        "--env Dev",
+        "--plane-type B787",
+        "--source-data-type Ags",
+        "--sensor_measurements_table_reference s3://virgin-b787-databases-v1/enriched_ags_b787",
+        "--computations_table_name s3://virgin-b787-databases-v1/prognos_computations_delta_lake_dev"
+      ]
+    },
+    "publisher": {
+      "runtimeArguments": [
+        "--class com.klm.em.prognos.publisher.Publish",
+        "--master yarn",
+        "--deploy-mode cluster",
+        "--files s3://#S3BUCKET/main/log4j.properties"
+      ],
+      "applicationArtifact":["s3://#S3BUCKET/klm-prognos-artefacts/prognos-publisher/prognos-publisher-assembly-#PUBLISHER_VERSION.jar"],
+      "applicationArguments":[
+        "-p Aws",
+        "-e Dev",
+        "--customer va",
+        "--input-table s3://virgin-b787-databases-v1/prognos_computations_delta_lake_dev",
+        "--flight-info-path s3://virgin-b787-databases-v1/preprocessed/ags/processed",
+        "--suffix KL"
+      ],
+      "secrets": [
+        {
+          "argument": "--mongo-uri",
+          "envVar": "MONGO_URI"
+        }
+      ]
+    }
   }
- 
 }
