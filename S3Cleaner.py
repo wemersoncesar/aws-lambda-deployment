@@ -1,4 +1,4 @@
-
+import boto3
 
 class S3Cleaner:
     def __init__(self, config):
@@ -7,8 +7,9 @@ class S3Cleaner:
 
     def get_checkpoint_path(self):
         """ Extracts the S3 checkpoint path from the configuration. """
-        config.jobArgs
-        for arg in self.config["jobArgs"]["preprocessor"]["applicationArguments"]:
+        job_args = self.config.job_args.get("preprocessor", {})
+
+        for arg in job_args["applicationArguments"]:
             if arg.startswith("--checkpoint-path"):
                 return arg.split(" ")[1]
         raise ValueError("Checkpoint path not found in the configuration.")
@@ -26,4 +27,5 @@ class S3Cleaner:
         """ Cleans the S3 folder specified in the '--checkpoint-path' argument. """
         s3_checkpoint_path = self.get_checkpoint_path()
         bucket_name, prefix = s3_checkpoint_path.replace("s3://", "").split("/", 1)
+        print(bucket_name)
         self.clean_s3_folder(bucket_name, prefix)

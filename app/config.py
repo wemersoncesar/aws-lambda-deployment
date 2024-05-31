@@ -32,7 +32,7 @@ class Config:
                 Path(os.path.abspath(__file__)).parent.parent, "config.json"
             )
         self._load_from_json(config_file_path)
-        self._load_from_env()
+        #self._load_from_env()
 
     def _load_from_json(self, config_file_path):
         """
