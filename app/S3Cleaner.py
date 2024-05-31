@@ -7,6 +7,7 @@ class S3Cleaner:
 
     def get_checkpoint_path(self):
         """ Extracts the S3 checkpoint path from the configuration. """
+        config.jobArgs
         for arg in self.config["jobArgs"]["preprocessor"]["applicationArguments"]:
             if arg.startswith("--checkpoint-path"):
                 return arg.split(" ")[1]

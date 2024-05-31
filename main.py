@@ -11,6 +11,8 @@ import os
 
 def lambda_handler(event, context):
     print(">>>>> ok <<<<<<")
+    config = Config()
+
     cleaner = S3Cleaner(config)
     cleaner.clean_checkpoint_folder()
     

@@ -38,7 +38,7 @@
         "-e Dev",
         "-s Ags",
         "-c va",
-        "--checkpoint-path s3://w-s3-checkpoint-to-be-deleted/preprocessor-checkpoints-2024-04-22",
+        "--checkpoint-path s3://w-s3-checkpoint-to-be-deleted/preprocessor-checkpoints",
         "--input-folder s3://#S3BUCKET-#CUSTOMER-#ENV/*/{G-VNEW,G-VBEL}/*-0-*.csv",
         "--output-path s3://#S3BUCKET/preprocessed/ags",
         "--ignore-days-before 2023-01-01",
